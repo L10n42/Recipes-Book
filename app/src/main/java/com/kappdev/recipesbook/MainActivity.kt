@@ -3,13 +3,9 @@ package com.kappdev.recipesbook
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.kappdev.recipesbook.core.presentation.navigation.Screen
+import com.kappdev.recipesbook.core.presentation.navigation.SetupNavGraph
 import com.kappdev.recipesbook.ui.theme.RecipesBookTheme
 
 class MainActivity : ComponentActivity() {
@@ -17,8 +13,13 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            RecipesBookTheme {
+            RecipesBookTheme(darkTheme = false) {
+                val navController = rememberNavController()
 
+                SetupNavGraph(
+                    navController = navController,
+                    startScreen = Screen.Greeting
+                )
             }
         }
     }

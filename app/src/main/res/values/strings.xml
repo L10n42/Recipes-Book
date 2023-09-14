@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Recipes Book</string>
+    <string name="log_in">Log in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="greeting">You\'re Welcome</string>
 </resources>
