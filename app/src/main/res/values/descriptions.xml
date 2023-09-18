@@ -3,4 +3,6 @@
     <string name="greeting_background_image">greeting_background_image</string>
     <string name="background_image">background_image</string>
     <string name="profile_image">profile_image</string>
+    <string name="new_recipe">new_recipe</string>
+    <string name="recipes_menu">recipes_menu</string>
 </resources>

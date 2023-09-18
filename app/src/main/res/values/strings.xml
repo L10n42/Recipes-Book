@@ -15,4 +15,5 @@
     <string name="confirm_password_warning">Confirm password!</string>
     <string name="wrong_confirmation_password">Wrong confirmation password!</string>
     <string name="ok">OK</string>
+    <string name="your_recipes">Your Recipes</string>
 </resources>
