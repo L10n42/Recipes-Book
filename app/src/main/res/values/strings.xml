@@ -3,4 +3,16 @@
     <string name="log_in">Log in</string>
     <string name="sign_up">Sign up</string>
     <string name="greeting">You\'re Welcome</string>
+    <string name="email">Email</string>
+    <string name="name">Name</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="email_not_verified_msg">Email not verified</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="enter_email">Enter email!</string>
+    <string name="enter_password">Enter password!</string>
+    <string name="enter_name">Enter name!</string>
+    <string name="confirm_password_warning">Confirm password!</string>
+    <string name="wrong_confirmation_password">Wrong confirmation password!</string>
+    <string name="ok">OK</string>
 </resources>

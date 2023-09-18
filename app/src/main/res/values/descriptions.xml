@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="greeting_background_image">greeting_background_image</string>
+    <string name="background_image">background_image</string>
+    <string name="profile_image">profile_image</string>
 </resources>

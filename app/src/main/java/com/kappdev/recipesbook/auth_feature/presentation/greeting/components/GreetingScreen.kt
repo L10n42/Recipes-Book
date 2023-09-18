@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.ui.theme.CookieFontFamily
 
 @Composable
@@ -46,14 +48,15 @@ fun GreetingScreen(
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 32.dp),
+                .navigationBarsPadding()
+                .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SignUpButton {
-
+                navController.navigate(Screen.SignUp.route)
             }
             LoginButton {
-
+                navController.navigate(Screen.Login.route)
             }
         }
     }
@@ -67,6 +70,7 @@ private fun GreetingText(
         text = stringResource(R.string.greeting),
         fontSize = 64.sp,
         modifier = modifier,
+        color = MaterialTheme.colorScheme.surface,
         fontFamily = CookieFontFamily
     )
 }
@@ -82,9 +86,7 @@ private fun SignUpButton(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
         ),
-        modifier = Modifier
-            .height(50.dp)
-            .width(300.dp)
+        modifier = ButtonModifier
     ) {
         Text(
             text = stringResource(R.string.sign_up),
@@ -104,9 +106,7 @@ private fun LoginButton(
             containerColor = MaterialTheme.colorScheme.tertiary,
             contentColor = MaterialTheme.colorScheme.onTertiary
         ),
-        modifier = Modifier
-            .height(50.dp)
-            .width(300.dp)
+        modifier = ButtonModifier
     ) {
         Text(
             text = stringResource(R.string.log_in),
@@ -114,3 +114,5 @@ private fun LoginButton(
         )
     }
 }
+
+private val ButtonModifier = Modifier.height(50.dp).width(280.dp)

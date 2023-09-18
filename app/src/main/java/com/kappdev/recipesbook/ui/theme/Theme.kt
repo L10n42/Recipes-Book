@@ -29,7 +29,9 @@ private val LightColorScheme = lightColorScheme(
     tertiary = Licorice,
     onTertiary = Color.White,
     surface = Color.White,
+    onSurface = Color.Black,
     background = Platinum,
+    onBackground = Gray
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

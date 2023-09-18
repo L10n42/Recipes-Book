@@ -2,8 +2,8 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.gms.google-services")
-    id("dagger.hilt.android.plugin")
-    id("kotlin-kapt")
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -52,7 +52,14 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 dependencies {
+
+    // Coil image
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Google - accompanist
     val accompanistVersion = "0.31.4-beta"
@@ -68,16 +75,17 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:$coroutinesVersion")
 
     // Dagger - Hilt
-    val daggerVersion = "2.44"
+    val daggerVersion = "2.48"
     implementation ("com.google.dagger:hilt-android:$daggerVersion")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:$daggerVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0-alpha01")
-    kapt("androidx.hilt:hilt-compiler:1.0.0")
+    //kapt("androidx.hilt:hilt-compiler:1.0.0")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.1.1"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
     implementation("com.google.firebase:firebase-auth-ktx")
 
     // JSON convertor
