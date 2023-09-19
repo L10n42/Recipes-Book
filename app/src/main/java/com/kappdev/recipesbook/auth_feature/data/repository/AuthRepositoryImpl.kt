@@ -10,6 +10,8 @@ import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.auth_feature.domain.model.UserData
 import com.kappdev.recipesbook.auth_feature.domain.repository.AuthRepository
 import com.kappdev.recipesbook.auth_feature.domain.util.EmailNotVerifiedException
+import com.kappdev.recipesbook.core.data.common.Firestore
+import com.kappdev.recipesbook.core.data.common.Storage
 import com.kappdev.recipesbook.core.domain.util.ResultState
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.tasks.await
@@ -46,17 +48,17 @@ class AuthRepositoryImpl @Inject constructor(
 
     private suspend fun createUserProfile(user: UserData, imageUrl: String, uid: String) {
         val data = mapOf(
-            USER_UID to uid,
-            USER_NAME to user.name,
-            USER_EMAIL to user.email,
-            USER_PROFILE_IMAGE to imageUrl
+            Firestore.Field.USER_UID to uid,
+            Firestore.Field.USER_NAME to user.name,
+            Firestore.Field.USER_EMAIL to user.email,
+            Firestore.Field.USER_PROFILE_IMAGE to imageUrl
         )
-        val users = firestore.collection(USERS_COLLECTION)
+        val users = firestore.collection(Firestore.Collection.USERS)
         users.document(auth.currentUser!!.uid).set(data).await()
     }
 
     private suspend fun Uri.uploadToStorage(): String {
-        val reference = storage.reference.child(PROFILE_PICTURES).child(auth.currentUser!!.uid)
+        val reference = storage.reference.child(Storage.Folder.PROFILE_PICTURES).child(auth.currentUser!!.uid)
         reference.putFile(this).await()
         return reference.downloadUrl.await().toString()
     }
@@ -67,15 +69,5 @@ class AuthRepositoryImpl @Inject constructor(
         } else {
             throw EmailNotVerifiedException(context.getString(R.string.email_not_verified_msg))
         }
-    }
-
-    companion object {
-        private const val PROFILE_PICTURES = "profile_pictures"
-        private const val USERS_COLLECTION = "users"
-
-        private const val USER_UID = "uid"
-        private const val USER_NAME = "name"
-        private const val USER_EMAIL = "email"
-        private const val USER_PROFILE_IMAGE = "profile_image"
     }
 }

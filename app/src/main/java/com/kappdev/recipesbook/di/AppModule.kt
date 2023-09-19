@@ -6,6 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kappdev.recipesbook.auth_feature.data.repository.AuthRepositoryImpl
 import com.kappdev.recipesbook.auth_feature.domain.repository.AuthRepository
+import com.kappdev.recipesbook.recipes_feature.data.repository.ProfileRepositoryImpl
+import com.kappdev.recipesbook.recipes_feature.domain.repository.ProfileRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,5 +46,11 @@ object AppModule {
         firestore: FirebaseFirestore,
     ): AuthRepository {
         return AuthRepositoryImpl(context = context, auth = auth, storage = storage, firestore = firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideProfileRepository(auth: FirebaseAuth, firestore: FirebaseFirestore): ProfileRepository {
+        return ProfileRepositoryImpl(auth = auth, firestore = firestore)
     }
 }
