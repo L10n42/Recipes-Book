@@ -53,7 +53,7 @@ fun InfoDialog(
                         Text(
                             text = title,
                             fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
+                            fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -67,6 +67,8 @@ fun InfoDialog(
                         fontSize = 16.sp,
                         color = messageColor
                     )
+
+                    VerticalSpace(8.dp)
 
                     TextButton(
                         modifier = Modifier.align(Alignment.End),

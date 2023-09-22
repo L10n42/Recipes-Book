@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
@@ -25,8 +26,9 @@ import com.kappdev.recipesbook.R
 fun ProfileImage(
     model: Any?,
     modifier: Modifier = Modifier,
+    size: Dp = 72.dp,
     enable: Boolean = true,
-    onClick: () -> Unit,
+    onClick: () -> Unit = {},
 ) {
     SubcomposeAsyncImage(
         model = model,
@@ -39,7 +41,7 @@ fun ProfileImage(
             EmptyProfileImage()
         },
         modifier = Modifier
-            .size(72.dp)
+            .size(size)
             .then(modifier)
             .clip(CircleShape)
             .clickable(enabled = enable, onClick = onClick)

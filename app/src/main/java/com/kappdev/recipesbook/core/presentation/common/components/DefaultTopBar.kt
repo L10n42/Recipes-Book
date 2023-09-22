@@ -1,14 +1,12 @@
-package com.kappdev.recipesbook.recipes_feature.presentation.recipes.components
+package com.kappdev.recipesbook.core.presentation.common.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,9 +20,9 @@ import androidx.compose.ui.unit.sp
 import com.kappdev.recipesbook.R
 
 @Composable
-fun RecipesTopBar(
-    newRecipe: () -> Unit,
-    showDrawer: () -> Unit
+fun DefaultTopBar(
+    title: String,
+    onBack: () -> Unit
 ) {
     TopAppBar(
         elevation = 0.dp,
@@ -32,7 +30,7 @@ fun RecipesTopBar(
         backgroundColor = Color.Transparent,
         title = {
             Text(
-                text = stringResource(R.string.your_recipes),
+                text = title,
                 fontSize = 18.sp,
                 textAlign = TextAlign.Center,
                 fontWeight = FontWeight.SemiBold,
@@ -41,26 +39,16 @@ fun RecipesTopBar(
             )
         },
         navigationIcon = {
-            IconButton(
-                onClick = showDrawer
-            ) {
+            IconButton(onClick = onBack) {
                 Icon(
-                    imageVector = Icons.Rounded.Menu,
+                    imageVector = Icons.Rounded.ArrowBack,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(R.string.recipes_menu)
+                    contentDescription = stringResource(R.string.back_btn)
                 )
             }
         },
         actions = {
-            IconButton(
-                onClick = newRecipe
-            ) {
-                Icon(
-                    imageVector = Icons.Rounded.Add,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(R.string.new_recipe)
-                )
-            }
+            HorizontalSpace(64.dp)
         }
     )
 }

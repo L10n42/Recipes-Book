@@ -5,4 +5,10 @@
     <string name="profile_image">profile_image</string>
     <string name="new_recipe">new_recipe</string>
     <string name="recipes_menu">recipes_menu</string>
+    <string name="recipe_image">recipe_image</string>
+    <string name="back_btn">back_btn</string>
+    <string name="action_button_icon">action_button_icon</string>
+    <string name="pick_photo_icon">pick_photo_icon</string>
+    <string name="item_drag_indicator">item_drag_indicator</string>
+    <string name="remove_item_button">remove_item_button</string>
 </resources>

@@ -31,7 +31,8 @@ class MainActivity : ComponentActivity() {
                 val systemUiController = rememberSystemUiController()
 
                 SideEffect {
-                    systemUiController.setSystemBarsColor(Color.Transparent, darkIcons = true)
+                    systemUiController.setNavigationBarColor(Color.Transparent, darkIcons = false)
+                    systemUiController.setStatusBarColor(Color.Transparent, darkIcons = true)
                 }
 
                 SetupNavGraph(

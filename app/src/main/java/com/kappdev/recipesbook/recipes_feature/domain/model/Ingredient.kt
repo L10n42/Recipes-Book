@@ -1,7 +1,7 @@
 package com.kappdev.recipesbook.recipes_feature.domain.model
 
-data class User(
+data class Ingredient(
     val name: String = "",
-    val email: String = "",
-    val profileImage: String = ""
+    val amount: String = "",
+    val units: String = ""
 )

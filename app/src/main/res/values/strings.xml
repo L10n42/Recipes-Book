@@ -16,4 +16,24 @@
     <string name="wrong_confirmation_password">Wrong confirmation password!</string>
     <string name="ok">OK</string>
     <string name="your_recipes">Your Recipes</string>
+    <string name="new_recipe_title">New recipe</string>
+    <string name="randrom_recipe_title">Randrom recipe</string>
+    <string name="settings">Settings</string>
+    <string name="log_out_title">Log out</string>
+    <string name="profile_photo_updated_msg">Profile photo updated successfully!</string>
+    <string name="failed_to_update_profile_photo_msg">Failed to update profile photo.</string>
+    <string name="search">Search</string>
+    <string name="save">Save</string>
+    <string name="description">Description</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="method">Method</string>
+    <string name="recipe_ingredients">Recipe Ingredients</string>
+    <string name="new_title">New</string>
+    <string name="new_ingredient">New ingredient</string>
+    <string name="edit_ingredient">Edit ingredient</string>
+    <string name="amount">Amount</string>
+    <string name="units">Units</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="update">Update</string>
 </resources>
