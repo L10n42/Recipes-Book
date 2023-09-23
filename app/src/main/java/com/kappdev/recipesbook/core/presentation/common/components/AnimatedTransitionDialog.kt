@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun AnimatedTransitionDialog(
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
     dialogProperties: DialogProperties = DialogProperties(),
     contentAlignment: Alignment = Alignment.Center,
     content: @Composable (AnimatedTransitionDialogHelper) -> Unit
@@ -50,10 +51,11 @@ fun AnimatedTransitionDialog(
             }
         }
     ) {
-        Box(contentAlignment = contentAlignment,
+        Box(
+            contentAlignment = contentAlignment,
             modifier = Modifier.fillMaxSize()
         ) {
-            AnimatedScaleInTransition(visible = animateTrigger.value) {
+            AnimatedScaleInTransition(visible = animateTrigger.value, modifier = modifier) {
                 content(AnimatedTransitionDialogHelper(scope, onDismissSharedFlow))
             }
         }

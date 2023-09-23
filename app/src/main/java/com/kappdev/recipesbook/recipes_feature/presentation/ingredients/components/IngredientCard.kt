@@ -37,10 +37,22 @@ fun IngredientCard(
         HorizontalSpace(4.dp)
 
         Text(
-            text = ingredient.amount + " " + ingredient.units,
+            text = ingredient.buildAmountString(),
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1
         )
+    }
+}
+
+private fun Ingredient.buildAmountString(): String {
+    val amount = this@buildAmountString.amount
+    val units = this@buildAmountString.units
+
+    return buildString {
+        append(amount)
+        if (units.isNotBlank()) {
+            append("($units)")
+        }
     }
 }

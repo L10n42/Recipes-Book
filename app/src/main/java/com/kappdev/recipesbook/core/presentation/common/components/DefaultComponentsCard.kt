@@ -50,18 +50,19 @@ fun DefaultComponentsCard(
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = onDrag) {
-                Icon(
-                    imageVector = Icons.Rounded.DragIndicator,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = stringResource(R.string.item_drag_indicator)
-                )
-            }
+            HorizontalSpace(8.dp)
+            Icon(
+                imageVector = Icons.Rounded.DragIndicator,
+                tint = MaterialTheme.colorScheme.onSurface,
+                contentDescription = stringResource(R.string.item_drag_indicator),
+                modifier = Modifier.clickable(onClick = onDrag)
+            )
 
+            HorizontalSpace(4.dp)
             content()
         }
 
-        HorizontalSpace(4.dp)
+        HorizontalSpace(8.dp)
 
         Row(
             verticalAlignment = Alignment.CenterVertically

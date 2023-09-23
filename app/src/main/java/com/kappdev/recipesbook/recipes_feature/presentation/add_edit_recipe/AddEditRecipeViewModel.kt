@@ -24,6 +24,14 @@ class AddEditRecipeViewModel @Inject constructor(
         private set
 
 
+    fun setIngredients(ingredients: List<Ingredient>) {
+        this.ingredients.value = ingredients
+    }
+
+    fun setMethod(method: List<String>) {
+        this.method.value = method
+    }
+
     fun setRecipeDescription(description: String) {
         recipeDescription.value = description
     }

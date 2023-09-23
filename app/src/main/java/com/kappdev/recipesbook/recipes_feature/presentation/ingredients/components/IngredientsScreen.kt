@@ -3,6 +3,7 @@ package com.kappdev.recipesbook.recipes_feature.presentation.ingredients.compone
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,29 +24,44 @@ import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.goBackWithValue
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
-import com.kappdev.recipesbook.recipes_feature.presentation.ingredients.IngredientsState
+import com.kappdev.recipesbook.recipes_feature.presentation.ingredients.IngredientsScreenState
 
 @Composable
 fun IngredientsScreen(
     navController: NavHostController,
     initialIngredients: List<Ingredient>
 ) {
-    val screenState = remember { IngredientsState(initialIngredients) }
+    val screenState = remember { IngredientsScreenState(initialIngredients) }
+
+    if (screenState.isDialogVisible.value) {
+        IngredientDialog(
+            initialData = screenState.dialogData.value,
+            onDismiss = screenState::hideDialog,
+            onConfirm = { result ->
+                if (screenState.dialogData.value != null) {
+                    screenState.updateIngredient(result)
+                } else {
+                    screenState.addIngredient(result)
+                }
+            }
+        )
+    }
 
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.background,
         topBar = {
             DefaultTopBar(title = stringResource(R.string.recipe_ingredients)) {
-                navController.goBackWithValue(NavConst.INGREDIENTS_KEY, screenState.ingredient)
+                navController.goBackWithValue(NavConst.INGREDIENTS_KEY, screenState.ingredient.toList())
             }
         },
         floatingActionButtonPosition = FabPosition.Center,
         floatingActionButton = {
             ActionButton(
                 icon = Icons.Rounded.Add,
-                title = stringResource(R.string.new_title)
+                title = stringResource(R.string.new_title),
+                modifier = Modifier.navigationBarsPadding()
             ) {
-
+                screenState.showDialog(data = null)
             }
         }
     ) { paddingValues ->
@@ -54,13 +70,16 @@ fun IngredientsScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
             items(screenState.ingredient) { ingredient ->
                 IngredientCard(
                     ingredient = ingredient,
                     onRemove = {
                         screenState.removeIngredient(ingredient)
+                    },
+                    onClick = {
+                        screenState.showDialog(ingredient)
                     },
                     onDrag = { /*TODO*/ }
                 )

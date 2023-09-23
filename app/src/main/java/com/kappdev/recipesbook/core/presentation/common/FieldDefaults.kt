@@ -14,7 +14,9 @@ object FieldDefaults {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun colors() = TextFieldDefaults.textFieldColors(
+    fun colors(
+        background: Color = MaterialTheme.colorScheme.surface
+    ) = TextFieldDefaults.textFieldColors(
         textColor = MaterialTheme.colorScheme.onSurface,
         disabledTextColor = MaterialTheme.colorScheme.onBackground,
 
@@ -26,7 +28,7 @@ object FieldDefaults {
         disabledIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
 
-        containerColor = MaterialTheme.colorScheme.surface,
+        containerColor = background,
 
         focusedLeadingIconColor = MaterialTheme.colorScheme.onSurface,
         unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurface,
