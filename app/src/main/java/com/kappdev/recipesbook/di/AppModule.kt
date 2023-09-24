@@ -7,7 +7,11 @@ import com.google.firebase.storage.FirebaseStorage
 import com.kappdev.recipesbook.auth_feature.data.repository.AuthRepositoryImpl
 import com.kappdev.recipesbook.auth_feature.domain.repository.AuthRepository
 import com.kappdev.recipesbook.recipes_feature.data.repository.ProfileRepositoryImpl
+import com.kappdev.recipesbook.recipes_feature.data.repository.RecipeRepositoryImpl
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.UploadImages
 import com.kappdev.recipesbook.recipes_feature.domain.repository.ProfileRepository
+import com.kappdev.recipesbook.recipes_feature.domain.repository.RecipeRepository
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.GetRecipes
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,21 +25,15 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth {
-        return FirebaseAuth.getInstance()
-    }
+    fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
-    fun provideFirebaseStorage(): FirebaseStorage {
-        return FirebaseStorage.getInstance()
-    }
+    fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
 
     @Provides
     @Singleton
-    fun provideFirebaseFirestore(): FirebaseFirestore {
-        return FirebaseFirestore.getInstance()
-    }
+    fun provideFirebaseFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
     @Provides
     @Singleton
@@ -57,4 +55,18 @@ object AppModule {
     ): ProfileRepository {
         return ProfileRepositoryImpl(auth = auth, storage = storage, firestore = firestore)
     }
+
+    @Provides
+    @Singleton
+    fun provideRecipeRepository(auth: FirebaseAuth, firestore: FirebaseFirestore): RecipeRepository {
+        return RecipeRepositoryImpl(auth = auth, firestore = firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUploadImagesUseCase(storage: FirebaseStorage): UploadImages = UploadImages(storage)
+
+    @Provides
+    @Singleton
+    fun provideGetRecipesUseCase(repository: RecipeRepository): GetRecipes = GetRecipes(repository)
 }

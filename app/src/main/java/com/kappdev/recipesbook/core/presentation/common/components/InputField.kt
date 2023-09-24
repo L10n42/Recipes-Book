@@ -21,6 +21,7 @@ fun InputField(
     modifier: Modifier = Modifier,
     hint: String = "",
     enable: Boolean = true,
+    singleLine: Boolean = true,
     background: Color = MaterialTheme.colorScheme.surface,
     keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     onActionClick: () -> Unit = {},
@@ -28,8 +29,8 @@ fun InputField(
 ) {
     TextField(
         value = value,
-        singleLine = true,
         enabled = enable,
+        singleLine = singleLine,
         onValueChange = onValueChange,
         textStyle = LocalTextStyle.current.copy(fontSize = 16.sp),
         keyboardOptions = keyboardOptions,

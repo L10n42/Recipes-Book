@@ -21,15 +21,11 @@ import com.kappdev.recipesbook.core.presentation.common.DefaultSnackbarHost
 import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
 import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.LoadingDialog
+import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
-import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
+import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
 import com.kappdev.recipesbook.recipes_feature.presentation.recipes.RecipesViewModel
 import kotlinx.coroutines.launch
-
-private val TestRecipesList = listOf(
-    RecipeCard(name = "Salad", id = "fakf9jfs", images = listOf("https://www.allrecipes.com/thmb/k0Yugx575taH6eaSpD51xIC3s-4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/AR-14452-GreenSalad-0025-4x3-527a1d42f2c042c9bcaf1a68223d34e5.jpg")),
-    RecipeCard(name = "Borsch", id = "fdakhf", images = listOf("https://laplacinte.md/public/product_images/16/1016/3e44d56adc878028d4cf4999a9dd5e04.webp"))
-)
 
 @Composable
 fun RecipesScreen(
@@ -41,6 +37,7 @@ fun RecipesScreen(
     val user = viewModel.user.value
     val searchValue = viewModel.searchArg.value
     val isLoading = viewModel.isLoading.value
+    val recipes = viewModel.recipes.value
 
     NavigationHandler(navController = navController, navigateRoute = viewModel.navigateRoute)
 
@@ -99,9 +96,13 @@ fun RecipesScreen(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(TestRecipesList, { it.id }) { item ->
+                items(recipes, { it.id }) { item ->
                     RecipeCard(data = item) {
-                        /* TODO: open recipe info page */
+                        navController.navigateWithValue(
+                            route = Screen.RecipeDetail.route,
+                            valueKey = NavConst.RECIPE_ID_KEY,
+                            value = item.id
+                        )
                     }
                 }
             }

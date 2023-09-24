@@ -9,8 +9,10 @@ import com.kappdev.recipesbook.core.domain.ViewModelWithLoading
 import com.kappdev.recipesbook.core.domain.util.ResultState
 import com.kappdev.recipesbook.core.presentation.common.SnackbarState
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
+import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
 import com.kappdev.recipesbook.recipes_feature.domain.model.User
 import com.kappdev.recipesbook.recipes_feature.domain.repository.ProfileRepository
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.GetRecipes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -23,11 +25,14 @@ import javax.inject.Inject
 @HiltViewModel
 class RecipesViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
+    private val getRecipes: GetRecipes,
     @ApplicationContext private val context: Context
 ) : ViewModelWithLoading() {
 
     var searchArg = mutableStateOf("")
         private set
+
+    var recipes = mutableStateOf<List<RecipeCard>>(emptyList())
 
     var user = mutableStateOf(User())
         private set
@@ -40,12 +45,21 @@ class RecipesViewModel @Inject constructor(
 
     init {
         getUserData()
+        getRecipesData()
     }
 
     private fun getUserData() {
         viewModelScope.launch(Dispatchers.IO) {
             profileRepository.getUser().collectLatest { userData ->
                 user.value = userData
+            }
+        }
+    }
+
+    private fun getRecipesData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getRecipes().collectLatest { recipesList ->
+                recipes.value = recipesList
             }
         }
     }

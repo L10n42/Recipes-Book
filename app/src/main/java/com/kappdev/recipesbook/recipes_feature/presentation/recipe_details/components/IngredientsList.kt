@@ -1,30 +1,41 @@
-package com.kappdev.recipesbook.recipes_feature.presentation.ingredients.components
+package com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.components
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.kappdev.recipesbook.core.presentation.common.components.AnimatedComponentCard
 import com.kappdev.recipesbook.core.presentation.common.components.HorizontalSpace
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.domain.model.buildAmountString
 
 @Composable
-fun IngredientCard(
-    ingredient: Ingredient,
-    onRemove: () -> Unit,
-    onDrag: () -> Unit,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {},
+fun IngredientsList(
+    ingredients: List<Ingredient>
 ) {
-    AnimatedComponentCard(
-        modifier = modifier,
-        onDrag = onDrag,
-        onClick = onClick,
-        onRemove = onRemove
+    LazyColumn {
+        items(ingredients) { ingredient ->
+            Ingredient(
+                ingredient = ingredient
+            )
+        }
+    }
+}
+
+@Composable
+private fun Ingredient(
+    ingredient: Ingredient
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxWidth()
     ) {
         Text(
             text = ingredient.name,

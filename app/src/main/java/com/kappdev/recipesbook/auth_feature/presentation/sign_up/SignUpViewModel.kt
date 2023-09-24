@@ -23,7 +23,7 @@ class SignUpViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModelWithLoading() {
 
-    val infoDialogState = InfoDialogState()
+    val infoDialogState = InfoDialogState(context)
 
     var username = mutableStateOf("")
         private set
@@ -50,8 +50,8 @@ class SignUpViewModel @Inject constructor(
                     val result = authRepository.signUp(userData)
                     when {
                         result is ResultState.Success -> infoDialogState.show(
-                            title = "Registered!",
-                            message = "Please confirm you email by clicking on the link we've send to your e-box."
+                            titleRes = R.string.registered_title,
+                            messageRes = R.string.confirm_email_msg
                         )
                         result is ResultState.Failure -> snackbarState.show(result.exception.message ?: "")
                     }

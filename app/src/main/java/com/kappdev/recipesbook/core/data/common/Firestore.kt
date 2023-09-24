@@ -4,6 +4,7 @@ object Firestore {
 
     object Collection {
         const val USERS = "users"
+        const val RECIPES = "recipes"
     }
 
     object Field {

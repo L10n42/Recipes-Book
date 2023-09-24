@@ -128,17 +128,17 @@ private fun RecipeImage(
             onLoaded()
         },
         loading = {
-            EmptyProfileImage()
+            EmptyRecipeImage()
         },
         error = {
-            EmptyProfileImage()
+            EmptyRecipeImage()
         },
         modifier = Modifier.fillMaxSize()
     )
 }
 
 @Composable
-private fun EmptyProfileImage() {
+private fun EmptyRecipeImage() {
     Box(
         modifier = Modifier
             .fillMaxSize()

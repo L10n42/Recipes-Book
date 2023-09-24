@@ -1,4 +1,4 @@
-package com.kappdev.recipesbook.recipes_feature.presentation.ingredients.components
+package com.kappdev.recipesbook.recipes_feature.presentation.method_steps.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
@@ -24,25 +23,24 @@ import com.kappdev.recipesbook.core.presentation.common.components.ActionButton
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.goBackWithValue
-import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
-import com.kappdev.recipesbook.recipes_feature.presentation.ingredients.IngredientsScreenState
+import com.kappdev.recipesbook.recipes_feature.presentation.method_steps.AddEditMethodScreenState
 
 @Composable
-fun IngredientsScreen(
+fun AddEditMethodScreen(
     navController: NavHostController,
-    initialIngredients: List<Ingredient>
+    initialSteps: List<String>
 ) {
-    val screenState = remember { IngredientsScreenState(initialIngredients) }
+    val screenState = remember { AddEditMethodScreenState(initialSteps) }
 
     if (screenState.isDialogVisible.value) {
-        IngredientDialog(
+        StepDialog(
             initialData = screenState.dialogData.value,
             onDismiss = screenState::hideDialog,
             onConfirm = { result ->
                 if (screenState.dialogData.value != null) {
-                    screenState.updateIngredient(result)
+                    screenState.updateStep(result)
                 } else {
-                    screenState.addIngredient(result)
+                    screenState.addStep(result)
                 }
             }
         )
@@ -51,8 +49,8 @@ fun IngredientsScreen(
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.background,
         topBar = {
-            DefaultTopBar(title = stringResource(R.string.recipe_ingredients)) {
-                navController.goBackWithValue(NavConst.INGREDIENTS_KEY, screenState.ingredient.toList())
+            DefaultTopBar(title = stringResource(R.string.method_steps)) {
+                navController.goBackWithValue(NavConst.METHOD_STEPS_KEY, screenState.steps.toList())
             }
         },
         floatingActionButtonPosition = FabPosition.Center,
@@ -74,17 +72,17 @@ fun IngredientsScreen(
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
             itemsIndexed(
-                items = screenState.ingredient,
+                items = screenState.steps,
                 key = { _, item -> item.hashCode() }
-            ) { index, ingredient ->
-                IngredientCard(
-                    ingredient = ingredient,
+            ) { index, step ->
+                StepCard(
+                    step = step,
                     onRemove = {
-                        screenState.removeIngredient(ingredient)
+                        screenState.removeStep(step)
                     },
                     onClick = {
                         screenState.clickItem(index)
-                        screenState.showDialog(ingredient)
+                        screenState.showDialog(step)
                     },
                     onDrag = { /*TODO*/ }
                 )

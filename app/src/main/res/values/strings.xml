@@ -36,4 +36,13 @@
     <string name="cancel">Cancel</string>
     <string name="create">Create</string>
     <string name="update">Update</string>
+    <string name="method_steps">Method steps</string>
+    <string name="new_step">New step</string>
+    <string name="edit_step">Edit step</string>
+    <string name="empty_method_msg">Add at least 1 step to method.</string>
+    <string name="empty_ingredients_msg">Add at least 1 ingredient.</string>
+    <string name="empty_images_msg">Add at least 1 image.</string>
+    <string name="registered_title">Registered!</string>
+    <string name="confirm_email_msg">Please confirm you email by clicking on the link we\'ve send to your e-box.</string>
+    <string name="recipe_method">Recipe Method</string>
 </resources>

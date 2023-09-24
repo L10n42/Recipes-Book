@@ -17,6 +17,8 @@ class IngredientsScreenState(
     var isDialogVisible = mutableStateOf(false)
         private set
 
+    private var clickedItemIndex = -1
+
     init {
         _ingredients.addAll(initialIngredient)
     }
@@ -32,9 +34,8 @@ class IngredientsScreenState(
     }
 
     fun updateIngredient(ingredient: Ingredient) {
-        val index = _ingredients.indexOf(ingredient)
-        if (index != -1) {
-            _ingredients[index] = ingredient
+        if (clickedItemIndex != -1) {
+            _ingredients[clickedItemIndex] = ingredient
         }
     }
 
@@ -46,4 +47,7 @@ class IngredientsScreenState(
         _ingredients.remove(value)
     }
 
+    fun clickItem(index: Int) {
+        clickedItemIndex = index
+    }
 }
