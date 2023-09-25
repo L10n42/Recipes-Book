@@ -1,7 +1,10 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.components
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
@@ -18,9 +21,14 @@ import com.kappdev.recipesbook.recipes_feature.domain.model.buildAmountString
 
 @Composable
 fun IngredientsList(
-    ingredients: List<Ingredient>
+    ingredients: List<Ingredient>,
+    modifier: Modifier = Modifier
 ) {
-    LazyColumn {
+    LazyColumn(
+        modifier = modifier.navigationBarsPadding(),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(8.dp)
+    ) {
         items(ingredients) { ingredient ->
             Ingredient(
                 ingredient = ingredient

@@ -4,14 +4,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -34,10 +39,14 @@ fun RecipesScreen(
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
+    val listState = rememberLazyListState()
     val user = viewModel.user.value
-    val searchValue = viewModel.searchArg.value
     val isLoading = viewModel.isLoading.value
     val recipes = viewModel.recipes.value
+
+    val scrolled by remember {
+        derivedStateOf { listState.firstVisibleItemScrollOffset > 0 }
+    }
 
     NavigationHandler(navController = navController, navigateRoute = viewModel.navigateRoute)
 
@@ -60,6 +69,8 @@ fun RecipesScreen(
         backgroundColor = MaterialTheme.colorScheme.background,
         topBar = {
             RecipesTopBar(
+                viewModel = viewModel,
+                scrolled = scrolled,
                 newRecipe = {
                     navController.navigate(Screen.AddEditRecipe.route)
                 },
@@ -84,17 +95,13 @@ fun RecipesScreen(
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
-            SearchBox(
-                value = searchValue,
-                openFilters = { /*TODO*/ },
-                modifier = Modifier.padding(horizontal = 16.dp),
-                onValueChange = viewModel::search
-            )
-
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                state = listState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding(),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
             ) {
                 items(recipes, { it.id }) { item ->
                     RecipeCard(data = item) {
