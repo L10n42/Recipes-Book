@@ -3,9 +3,8 @@ package com.kappdev.recipesbook.recipes_feature.data.repository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.snapshots
-import com.google.firebase.storage.FirebaseStorage
 import com.kappdev.recipesbook.core.data.common.Firestore
-import com.kappdev.recipesbook.core.domain.util.ResultState
+import com.kappdev.recipesbook.core.domain.util.Result
 import com.kappdev.recipesbook.recipes_feature.domain.model.Recipe
 import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
 import com.kappdev.recipesbook.recipes_feature.domain.repository.RecipeRepository
@@ -22,17 +21,17 @@ class RecipeRepositoryImpl @Inject constructor(
     private val user = firestore.collection(Firestore.Collection.USERS).document(auth.currentUser!!.uid)
     private val userRecipes = user.collection(Firestore.Collection.RECIPES)
 
-    override suspend fun getRecipe(id: String): ResultState<Recipe> {
+    override suspend fun getRecipe(id: String): Result<Recipe> {
         return try {
             val result = userRecipes.document(id).get().await()
             val recipe = result.toObject(Recipe::class.java)
             if (recipe != null) {
-                ResultState.Success(recipe)
+                Result.Success(recipe)
             } else {
                 throw Exception("Couldn't get the recipe")
             }
         } catch (e: Exception) {
-            ResultState.Failure(e)
+            Result.Failure(e)
         }
     }
 
@@ -42,12 +41,21 @@ class RecipeRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun insertRecipe(recipe: Recipe): ResultState<Unit> {
+    override suspend fun deleteRecipe(recipeId: String): Result<Unit> {
+        return try {
+            userRecipes.document(recipeId).delete().await()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Failure(e)
+        }
+    }
+
+    override suspend fun insertRecipe(recipe: Recipe): Result<Unit> {
         return try {
             userRecipes.document(recipe.id).set(recipe).await()
-            ResultState.Success(Unit)
+            Result.Success(Unit)
         } catch (e: Exception) {
-            ResultState.Failure(e)
+            Result.Failure(e)
         }
     }
 

@@ -8,10 +8,14 @@ import com.kappdev.recipesbook.auth_feature.data.repository.AuthRepositoryImpl
 import com.kappdev.recipesbook.auth_feature.domain.repository.AuthRepository
 import com.kappdev.recipesbook.recipes_feature.data.repository.ProfileRepositoryImpl
 import com.kappdev.recipesbook.recipes_feature.data.repository.RecipeRepositoryImpl
-import com.kappdev.recipesbook.recipes_feature.domain.use_case.UploadImages
+import com.kappdev.recipesbook.recipes_feature.data.repository.StorageRepositoryImpl
 import com.kappdev.recipesbook.recipes_feature.domain.repository.ProfileRepository
 import com.kappdev.recipesbook.recipes_feature.domain.repository.RecipeRepository
+import com.kappdev.recipesbook.recipes_feature.domain.repository.StorageRepository
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.DeleteImages
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.DeleteRecipe
 import com.kappdev.recipesbook.recipes_feature.domain.use_case.GetRecipes
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.UploadImages
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -64,7 +68,23 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUploadImagesUseCase(storage: FirebaseStorage): UploadImages = UploadImages(storage)
+    fun provideStorageRepository(storage: FirebaseStorage,): StorageRepository {
+        return StorageRepositoryImpl(storage = storage)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUploadImagesUseCase(repository: StorageRepository): UploadImages = UploadImages(repository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteImagesUseCase(repository: StorageRepository): DeleteImages = DeleteImages(repository)
+
+    @Provides
+    @Singleton
+    fun provideDeleteRecipeUseCase(repository: RecipeRepository, deleteImages: DeleteImages): DeleteRecipe {
+        return DeleteRecipe(repository, deleteImages)
+    }
 
     @Provides
     @Singleton

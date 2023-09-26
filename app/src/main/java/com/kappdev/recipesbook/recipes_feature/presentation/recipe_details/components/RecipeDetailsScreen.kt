@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -35,6 +36,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.presentation.common.DefaultSnackbarHost
+import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
+import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.BackButton
 import com.kappdev.recipesbook.core.presentation.common.components.PictureBackground
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
@@ -50,7 +54,22 @@ fun RecipeDetailsScreen(
     viewModel: RecipeDetailViewModel = hiltViewModel()
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val snackbarState = SnackbarHostState()
     val recipe = viewModel.recipe.value
+
+    NavigationHandler(navController = navController, navigateRoute = viewModel.navigateRoute)
+
+    SnackbarHandler(
+        snackbarState = snackbarState,
+        snackbarMessage = viewModel.snackbarMessage,
+        onDismiss = {
+            viewModel.clearSnackbarMessage()
+        },
+        onAction = { dismiss ->
+            viewModel.clearSnackbarMessage()
+            dismiss()
+        }
+    )
 
     LaunchedEffect(Unit) {
         viewModel.getRecipeById(recipeId) {
@@ -84,7 +103,7 @@ fun RecipeDetailsScreen(
                             value = recipe.id
                         )
                     },
-                    onDelete = { /* TODO */ }
+                    onDelete = { viewModel.deleteCurrentRecipe() }
                 )
             }
 
@@ -131,6 +150,7 @@ fun RecipeDetailsScreen(
                 }
             }
         }
+        DefaultSnackbarHost(state = snackbarState)
     }
 }
 

@@ -9,7 +9,9 @@ import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.domain.ViewModelWithLoading
 import com.kappdev.recipesbook.core.domain.model.ImageSource
 import com.kappdev.recipesbook.core.domain.util.GenerateId
+import com.kappdev.recipesbook.core.domain.util.Result
 import com.kappdev.recipesbook.core.domain.util.ResultState
+import com.kappdev.recipesbook.core.domain.util.getMessageOrEmpty
 import com.kappdev.recipesbook.core.presentation.common.SnackbarState
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
@@ -62,16 +64,17 @@ class AddEditRecipeViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             validData {
                 suspendLoading {
-                    val downloadUrls = uploadImages(images)
-                    if (downloadUrls is ResultState.Success) {
-                        val recipe = packRecipe(downloadUrls.result)
-                        val insertResult = recipeRepository.insertRecipe(recipe)
-                        when {
-                            (insertResult is ResultState.Success) -> navigateTo(Screen.Recipes)
-                            (insertResult is ResultState.Failure) -> snackbarState.show(insertResult.exception.message ?: "")
+                    val result = uploadImages(images)
+                    when (result) {
+                        is Result.Success -> {
+                            val recipe = packRecipe(result.value)
+                            val insertResult = recipeRepository.insertRecipe(recipe)
+                            when (insertResult) {
+                                is Result.Success -> navigateTo(Screen.Recipes)
+                                is Result.Failure -> snackbarState.show(insertResult.getMessageOrEmpty())
+                            }
                         }
-                    } else if (downloadUrls is ResultState.Failure) {
-                        snackbarState.show(downloadUrls.exception.message ?: "")
+                        is Result.Failure -> snackbarState.show(result.getMessageOrEmpty())
                     }
                 }
             }
@@ -102,9 +105,9 @@ class AddEditRecipeViewModel @Inject constructor(
     fun getRecipeById(id: String, onFailure: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             val recipeResult = getRecipe(id)
-            when {
-                recipeResult is ResultState.Success -> unpackRecipe(recipeResult.result)
-                recipeResult is ResultState.Failure -> withContext(Dispatchers.Main) { onFailure() }
+            when (recipeResult) {
+                is Result.Success -> unpackRecipe(recipeResult.value)
+                is Result.Failure -> withContext(Dispatchers.Main) { onFailure() }
             }
         }
     }
