@@ -40,6 +40,7 @@ import com.kappdev.recipesbook.core.presentation.common.DefaultSnackbarHost
 import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
 import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.BackButton
+import com.kappdev.recipesbook.core.presentation.common.components.LoadingDialog
 import com.kappdev.recipesbook.core.presentation.common.components.PictureBackground
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
@@ -56,6 +57,9 @@ fun RecipeDetailsScreen(
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val snackbarState = SnackbarHostState()
     val recipe = viewModel.recipe.value
+    val isLoading = viewModel.isLoading.value
+
+    LoadingDialog(isVisible = isLoading)
 
     NavigationHandler(navController = navController, navigateRoute = viewModel.navigateRoute)
 

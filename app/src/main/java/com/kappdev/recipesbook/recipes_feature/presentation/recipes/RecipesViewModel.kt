@@ -43,12 +43,8 @@ class RecipesViewModel @Inject constructor(
     private val snackbarState = SnackbarState(context)
     val snackbarMessage = snackbarState.message
 
-    init {
-        getUserData()
-        getRecipesData()
-    }
 
-    private fun getUserData() {
+    fun getUserData() {
         viewModelScope.launch(Dispatchers.IO) {
             profileRepository.getUser().collectLatest { userData ->
                 user.value = userData
@@ -56,7 +52,7 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
-    private fun getRecipesData() {
+    fun getRecipesData() {
         viewModelScope.launch(Dispatchers.IO) {
             getRecipes().collectLatest { recipesList ->
                 recipes.value = recipesList

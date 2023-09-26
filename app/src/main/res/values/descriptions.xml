@@ -12,4 +12,5 @@
     <string name="item_drag_indicator">item_drag_indicator</string>
     <string name="remove_item_button">remove_item_button</string>
     <string name="back_button">back_button</string>
+    <string name="show_description_icon">show description icon</string>
 </resources>

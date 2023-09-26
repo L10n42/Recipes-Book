@@ -14,6 +14,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -51,6 +52,11 @@ fun RecipesScreen(
     NavigationHandler(navController = navController, navigateRoute = viewModel.navigateRoute)
 
     LoadingDialog(isVisible = isLoading)
+
+    LaunchedEffect(Unit) {
+        viewModel.getUserData()
+        viewModel.getRecipesData()
+    }
 
     SnackbarHandler(
         snackbarState = scaffoldState.snackbarHostState,

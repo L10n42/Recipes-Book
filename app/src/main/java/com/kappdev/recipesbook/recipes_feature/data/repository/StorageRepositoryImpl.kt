@@ -29,7 +29,7 @@ class StorageRepositoryImpl @Inject constructor(
 
     override suspend fun deleterImage(url: String): Result<Unit> {
         return try {
-            imagesFolder.child(url).delete().await()
+            storage.getReferenceFromUrl(url).delete().await()
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Failure(e)
