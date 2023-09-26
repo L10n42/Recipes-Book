@@ -2,8 +2,10 @@ package com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.comp
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,8 +38,9 @@ import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.presentation.common.components.BackButton
 import com.kappdev.recipesbook.core.presentation.common.components.PictureBackground
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
-import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
-import com.kappdev.recipesbook.recipes_feature.domain.model.Recipe
+import com.kappdev.recipesbook.core.presentation.navigation.NavConst
+import com.kappdev.recipesbook.core.presentation.navigation.Screen
+import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
 import com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.RecipeDetailViewModel
 
 @Composable
@@ -72,13 +75,17 @@ fun RecipeDetailsScreen(
                         .height(240.dp)
                 )
 
-                BackButton(
-                    modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .statusBarsPadding()
-                ) {
-                    navController.popBackStack()
-                }
+                Actions(
+                    onBack = { navController.popBackStack() },
+                    onEdit = {
+                        navController.navigateWithValue(
+                            route = Screen.AddEditRecipe.route,
+                            valueKey = NavConst.RECIPE_ID_KEY,
+                            value = recipe.id
+                        )
+                    },
+                    onDelete = { /* TODO */ }
+                )
             }
 
             VerticalSpace(16.dp)
@@ -98,6 +105,7 @@ fun RecipeDetailsScreen(
             Text(
                 text = recipe.description,
                 fontSize = 16.sp,
+                lineHeight = 18.sp,
                 maxLines = 4,
                 color = MaterialTheme.colorScheme.onSurface,
                 overflow = TextOverflow.Ellipsis,
@@ -123,6 +131,28 @@ fun RecipeDetailsScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun Actions(
+    onBack: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+    ) {
+        BackButton(onClick = onBack)
+
+        RecipeMoreMenu(
+            onDelete = onDelete,
+            onEdit = onEdit
+        )
     }
 }
 

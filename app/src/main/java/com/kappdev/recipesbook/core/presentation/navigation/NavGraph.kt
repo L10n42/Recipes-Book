@@ -41,9 +41,10 @@ fun SetupNavGraph(
         }
 
         composable(Screen.AddEditRecipe.route) { stackEntry ->
-            val ingredients = stackEntry.catchValue<List<Ingredient>>(NavConst.INGREDIENTS_KEY) ?: emptyList()
-            val method = stackEntry.catchValue<List<String>>(NavConst.METHOD_STEPS_KEY) ?: emptyList()
-            AddEditRecipeScreen(navController, ingredients, method)
+            val ingredients = stackEntry.catchValue<List<Ingredient>>(NavConst.INGREDIENTS_KEY)
+            val method = stackEntry.catchValue<List<String>>(NavConst.METHOD_STEPS_KEY)
+            val recipeId = stackEntry.catchValue<String>(NavConst.RECIPE_ID_KEY)
+            AddEditRecipeScreen(navController, ingredients, method, recipeId)
         }
 
         composable(Screen.Ingredients.route) { stackEntry ->

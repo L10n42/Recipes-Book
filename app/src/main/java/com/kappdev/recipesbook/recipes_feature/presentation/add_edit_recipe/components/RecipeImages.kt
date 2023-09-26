@@ -1,6 +1,5 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.components
 
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,10 +22,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.domain.model.ImageSource
 
 @Composable
 fun RecipeImages(
-    images: List<Uri>,
+    images: List<ImageSource>,
     modifier: Modifier = Modifier,
     addImage: () -> Unit
 ) {
@@ -41,7 +41,7 @@ fun RecipeImages(
     ) {
         if (images.isNotEmpty()) {
             SubcomposeAsyncImage(
-                model = images.first(),
+                model = images.first().model,
                 contentDescription = stringResource(R.string.recipe_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),

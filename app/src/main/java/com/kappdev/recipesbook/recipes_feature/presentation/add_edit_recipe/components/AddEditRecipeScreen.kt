@@ -39,8 +39,9 @@ import com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.AddE
 @Composable
 fun AddEditRecipeScreen(
     navController: NavHostController,
-    initialIngredients: List<Ingredient> = emptyList(),
-    initialMethod: List<String> = emptyList(),
+    initialIngredients: List<Ingredient>?,
+    initialMethod: List<String>?,
+    recipeId: String?,
     viewModel: AddEditRecipeViewModel = hiltViewModel()
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -76,9 +77,14 @@ fun AddEditRecipeScreen(
         }
     )
 
-    LaunchedEffect(initialIngredients) {
-        viewModel.setIngredients(initialIngredients)
-        viewModel.setMethod(initialMethod)
+    LaunchedEffect(Unit) {
+        initialIngredients?.let { viewModel.setIngredients(initialIngredients) }
+        initialMethod?.let { viewModel.setMethod(initialMethod) }
+        if (recipeId != null && viewModel.recipeId == null) {
+            viewModel.getRecipeById(recipeId) {
+                navController.popBackStack()
+            }
+        }
     }
 
     Scaffold(

@@ -45,4 +45,7 @@
     <string name="registered_title">Registered!</string>
     <string name="confirm_email_msg">Please confirm you email by clicking on the link we\'ve send to your e-box.</string>
     <string name="recipe_method">Recipe Method</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="recipe_more_menu_button">recipe_more_menu_button</string>
 </resources>
