@@ -3,7 +3,6 @@ package com.kappdev.recipesbook.recipes_feature.presentation.recipes.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,6 +25,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
-import com.kappdev.recipesbook.core.presentation.common.components.HorizontalSpace
+import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,6 +52,7 @@ fun RecipeCard(
     data: RecipeCard,
     onClick: () -> Unit
 ) {
+    var descriptionLineCount by remember { mutableIntStateOf(0) }
     var isImageVisible by remember { mutableStateOf(false) }
 
     Surface(
@@ -68,9 +69,19 @@ fun RecipeCard(
                 isImageVisible = true
             }
 
-            Shade(isVisible = isImageVisible)
+            Shade(
+                isVisible = isImageVisible,
+                visibleLines = descriptionLineCount
+            )
 
-            RecipeInfo(name = data.name, description = data.description, isImageVisible = isImageVisible)
+            RecipeInfo(
+                name = data.name,
+                description = data.description,
+                isImageVisible = isImageVisible,
+                onLineCountChange = { lineCount ->
+                    descriptionLineCount = lineCount
+                }
+            )
         }
     }
 }
@@ -80,6 +91,7 @@ private fun RecipeInfo(
     name: String,
     description: String,
     isImageVisible: Boolean,
+    onLineCountChange: (lineCount: Int) -> Unit
 ) {
     val clickInteractionSource = remember { MutableInteractionSource() }
     var expandedDescription by remember { mutableStateOf(false) }
@@ -108,7 +120,8 @@ private fun RecipeInfo(
         RecipeDescription(
             description = description,
             expanded = expandedDescription,
-            color = textColor
+            color = textColor,
+            onLineCountChange = onLineCountChange
         )
     }
 }
@@ -117,7 +130,8 @@ private fun RecipeInfo(
 private fun RecipeDescription(
     description: String,
     expanded: Boolean,
-    color: Color
+    color: Color,
+    onLineCountChange: (lineCount: Int) -> Unit
 ) {
     val maxLines by animateIntAsState(
         targetValue = if (expanded) 4 else 1,
@@ -130,7 +144,10 @@ private fun RecipeDescription(
         maxLines = maxLines,
         lineHeight = 16.sp,
         color = color,
-        overflow = TextOverflow.Ellipsis
+        overflow = TextOverflow.Ellipsis,
+        onTextLayout = { textLayoutResult ->
+            onLineCountChange(textLayoutResult.lineCount)
+        }
     )
 }
 
@@ -171,10 +188,17 @@ private fun RecipeName(
 
 @Composable
 private fun Shade(
-    isVisible: Boolean
+    isVisible: Boolean,
+    visibleLines: Int
 ) {
+
     val shadeSize by animateFloatAsState(
-        targetValue = if (isVisible) 0.6f else 1f, label = ""
+        targetValue =  when {
+            (isVisible && visibleLines <= 1) -> 0.6f
+            (isVisible && visibleLines > 1) -> 0.6f - (0.05f * visibleLines)
+            else -> 1f
+        },
+        label = "shade size"
     )
 
     val shadeAlpha by animateFloatAsState(
