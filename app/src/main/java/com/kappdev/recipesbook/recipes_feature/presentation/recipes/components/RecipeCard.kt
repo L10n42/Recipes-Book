@@ -117,12 +117,14 @@ private fun RecipeInfo(
             isDescriptionExpanded = expandedDescription
         )
 
-        RecipeDescription(
-            description = description,
-            expanded = expandedDescription,
-            color = textColor,
-            onLineCountChange = onLineCountChange
-        )
+        if (description.isNotBlank()) {
+            RecipeDescription(
+                description = description,
+                expanded = expandedDescription,
+                color = textColor,
+                onLineCountChange = onLineCountChange
+            )
+        }
     }
 }
 
