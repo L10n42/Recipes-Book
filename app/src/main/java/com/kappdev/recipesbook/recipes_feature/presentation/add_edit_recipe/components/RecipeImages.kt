@@ -1,15 +1,26 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
+import androidx.compose.material.icons.rounded.BrokenImage
+import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -23,39 +34,85 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.domain.model.ImageSource
+import io.grpc.okhttp.internal.Platform
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RecipeImages(
     images: List<ImageSource>,
-    modifier: Modifier = Modifier,
-    addImage: () -> Unit
+    addImage: () -> Unit,
+    removeImage: (image: ImageSource) -> Unit,
+) {
+    val listState = rememberLazyListState()
+    val snapBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+
+    LazyRow(
+        modifier = Modifier.fillMaxWidth(),
+        state = listState,
+        flingBehavior = snapBehavior,
+        contentPadding = PaddingValues(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        item {
+            Platform {
+                EmptyImage(
+                    icon = Icons.Rounded.AddPhotoAlternate,
+                    modifier = Modifier.clickable(onClick = addImage)
+                )
+            }
+        }
+        items(images, { it.hashCode() }) { image ->
+            Platform {
+                ImageCard(image = image) {
+                    removeImage(image)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun Platform(
+    content: @Composable () -> Unit
 ) {
     Surface(
         modifier = Modifier
             .height(150.dp)
-            .width(286.dp)
-            .then(modifier),
+            .width(286.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = 6.dp,
-        color = MaterialTheme.colorScheme.surface
-    ) {
-        if (images.isNotEmpty()) {
-            SubcomposeAsyncImage(
-                model = images.first().model,
-                contentDescription = stringResource(R.string.recipe_image),
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-                error = {
-                    EmptyImage(icon = Icons.Rounded.Image)
-                },
-                loading = {
-                    EmptyImage(icon = Icons.Rounded.Image)
-                }
-            )
-        } else {
-            EmptyImage(
-                icon = Icons.Rounded.AddPhotoAlternate,
-                modifier = Modifier.clickable(onClick = addImage)
+        color = MaterialTheme.colorScheme.surface,
+        content = content
+    )
+}
+
+@Composable
+private fun ImageCard(
+    image: ImageSource,
+    onRemove: () -> Unit
+) {
+    Box {
+        SubcomposeAsyncImage(
+            model = image.model,
+            contentDescription = stringResource(R.string.recipe_image),
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize(),
+            error = {
+                EmptyImage(icon = Icons.Rounded.BrokenImage)
+            },
+            loading = {
+                EmptyImage(icon = Icons.Rounded.Image)
+            }
+        )
+
+        IconButton(
+            onClick = onRemove,
+            modifier = Modifier.align(Alignment.TopEnd)
+        ) {
+            Icon(
+                imageVector = Icons.Rounded.Close,
+                tint = MaterialTheme.colorScheme.onSurface,
+                contentDescription = stringResource(R.string.delete_image_icon)
             )
         }
     }

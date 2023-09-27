@@ -123,6 +123,10 @@ class AddEditRecipeViewModel @Inject constructor(
         )
     }
 
+    fun removeImage(image: ImageSource) {
+        _images.remove(image)
+    }
+
     fun addImage(uri: Uri) {
         _images.add(ImageSource.Uri(uri))
     }

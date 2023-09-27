@@ -2,26 +2,38 @@ package com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.com
 
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.presentation.common.DefaultSnackbarHost
+import com.kappdev.recipesbook.core.presentation.common.KeyboardOpenedEffect
 import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
 import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.ActionButton
@@ -35,7 +47,9 @@ import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.AddEditRecipeViewModel
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AddEditRecipeScreen(
     navController: NavHostController,
@@ -44,13 +58,24 @@ fun AddEditRecipeScreen(
     recipeId: String?,
     viewModel: AddEditRecipeViewModel = hiltViewModel()
 ) {
+    val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
+    val descriptionBIVR = remember { BringIntoViewRequester() }
     val recipeName = viewModel.recipeName.value
     val recipeDescription = viewModel.recipeDescription.value
     val method = viewModel.method.value
     val ingredients = viewModel.ingredients.value
     val images = viewModel.images
     val isLoading = viewModel.isLoading.value
+    var showSaveDialog by remember { mutableStateOf(false) }
+
+    if (showSaveDialog) {
+        SaveChangesDialog(
+            onSave = { viewModel.insertRecipe() },
+            onDismiss = { showSaveDialog = false },
+            onDiscard = { navController.popBackStack() }
+        )
+    }
 
     LoadingDialog(isVisible = isLoading)
 
@@ -90,78 +115,98 @@ fun AddEditRecipeScreen(
     Scaffold(
         scaffoldState = scaffoldState,
         backgroundColor = MaterialTheme.colorScheme.background,
-        snackbarHost = { state ->
-            DefaultSnackbarHost(state = state)
-        },
-        topBar = {
-            DefaultTopBar(title = stringResource(R.string.new_recipe_title)) {
-                navController.popBackStack()
-            }
-        }
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                RecipeImages(images) {
-                    pickPhotoLauncher.launch("image/*")
-                }
-
-                VerticalSpace(16.dp)
-
-                InputField(
-                    value = recipeName,
-                    hint = stringResource(R.string.name),
-                    modifier = Modifier.fillMaxWidth(),
-                    onValueChange = viewModel::setRecipeName
-                )
-
-                InputField(
-                    value = recipeDescription,
-                    hint = stringResource(R.string.description),
-                    modifier = Modifier.fillMaxWidth(),
-                    onValueChange = viewModel::setRecipeDescription
-                )
-
-                SelectorField(
-                    title = stringResource(R.string.ingredients).plusAmount(ingredients.size),
-                    checked = ingredients.isNotEmpty()
-                ) {
-                    navController.navigateWithValue(
-                        route = Screen.Ingredients.route,
-                        valueKey = NavConst.INGREDIENTS_KEY,
-                        value = ingredients
-                    )
-                }
-
-                SelectorField(
-                    title = stringResource(R.string.method_steps).plusAmount(method.size),
-                    checked = method.isNotEmpty()
-                ) {
-                    navController.navigateWithValue(
-                        route = Screen.AddEditMethod.route,
-                        valueKey = NavConst.METHOD_STEPS_KEY,
-                        value = method
-                    )
-                }
-            }
-
+        floatingActionButtonPosition = FabPosition.Center,
+        floatingActionButton = {
             ActionButton(
                 title = stringResource(R.string.save),
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .navigationBarsPadding()
-                    .padding(bottom = 16.dp)
+                modifier = Modifier.navigationBarsPadding()
             ) {
                 viewModel.insertRecipe()
+            }
+        },
+        snackbarHost = { state ->
+            DefaultSnackbarHost(
+                state = state,
+                statusBarPadding = false,
+                navigationBarPadding = false
+            )
+        },
+        topBar = {
+            DefaultTopBar(
+                title = when {
+                    (recipeId != null) -> stringResource(R.string.edit_recipe_title)
+                    else -> stringResource(R.string.new_recipe_title)
+                },
+                onBack = { showSaveDialog = true }
+            )
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(paddingValues),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            RecipeImages(
+                images = images,
+                addImage = {
+                    pickPhotoLauncher.launch("image/*")
+                },
+                removeImage = { image ->
+                    viewModel.removeImage(image)
+                }
+            )
+
+            VerticalSpace(16.dp)
+
+            InputField(
+                value = recipeName,
+                singleLine = false,
+                hint = stringResource(R.string.name),
+                onValueChange = viewModel::setRecipeName,
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+            )
+
+            InputField(
+                value = recipeDescription,
+                singleLine = false,
+                hint = stringResource(R.string.description),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .bringIntoViewRequester(descriptionBIVR)
+                    .onFocusChanged {
+                        if (it.isFocused) {
+                            scope.launch { descriptionBIVR.bringIntoView() }
+                        }
+                    },
+                onValueChange = viewModel::setRecipeDescription
+            )
+
+            SelectorField(
+                title = stringResource(R.string.ingredients).plusAmount(ingredients.size),
+                checked = ingredients.isNotEmpty(),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                navController.navigateWithValue(
+                    route = Screen.Ingredients.route,
+                    valueKey = NavConst.INGREDIENTS_KEY,
+                    value = ingredients
+                )
+            }
+
+            SelectorField(
+                title = stringResource(R.string.method_steps).plusAmount(method.size),
+                checked = method.isNotEmpty(),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                navController.navigateWithValue(
+                    route = Screen.AddEditMethod.route,
+                    valueKey = NavConst.METHOD_STEPS_KEY,
+                    value = method
+                )
             }
         }
     }

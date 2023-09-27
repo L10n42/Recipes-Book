@@ -36,7 +36,7 @@ fun SelectorField(
     }
 
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(50.dp)
             .background(
@@ -45,8 +45,7 @@ fun SelectorField(
             )
             .clip(FieldDefaults.shape)
             .clickable(onClick = onClick)
-            .padding(start = 16.dp, end = 8.dp)
-            .then(modifier),
+            .padding(start = 16.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

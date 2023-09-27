@@ -48,4 +48,8 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="recipe_more_menu_button">recipe_more_menu_button</string>
+    <string name="edit_recipe_title">Edit recipe</string>
+    <string name="save_changes_msg">Do you want save changes before exit?</string>
+    <string name="discard">Discard</string>
+    <string name="delete_image_icon">delete_image_icon</string>
 </resources>
