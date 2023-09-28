@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -46,14 +47,13 @@ fun RecipeImages(
     val listState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = listState)
 
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        state = listState,
-        flingBehavior = snapBehavior,
-        contentPadding = PaddingValues(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        item {
+    if (images.isEmpty()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Platform {
                 EmptyImage(
                     icon = Icons.Rounded.AddPhotoAlternate,
@@ -61,10 +61,27 @@ fun RecipeImages(
                 )
             }
         }
-        items(images, { it.hashCode() }) { image ->
-            Platform {
-                ImageCard(image = image) {
-                    removeImage(image)
+    } else {
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            state = listState,
+            flingBehavior = snapBehavior,
+            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                Platform {
+                    EmptyImage(
+                        icon = Icons.Rounded.AddPhotoAlternate,
+                        modifier = Modifier.clickable(onClick = addImage)
+                    )
+                }
+            }
+            items(images, { it.hashCode() }) { image ->
+                Platform {
+                    ImageCard(image = image) {
+                        removeImage(image)
+                    }
                 }
             }
         }

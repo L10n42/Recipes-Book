@@ -13,4 +13,6 @@
     <string name="remove_item_button">remove_item_button</string>
     <string name="back_button">back_button</string>
     <string name="show_description_icon">show description icon</string>
+    <string name="right_image_button">right_image_button</string>
+    <string name="left_image_button">left_image_button</string>
 </resources>

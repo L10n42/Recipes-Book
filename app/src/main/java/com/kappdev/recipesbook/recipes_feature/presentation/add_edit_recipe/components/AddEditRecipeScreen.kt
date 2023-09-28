@@ -33,7 +33,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.presentation.common.DefaultSnackbarHost
-import com.kappdev.recipesbook.core.presentation.common.KeyboardOpenedEffect
 import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
 import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.ActionButton
@@ -41,7 +40,6 @@ import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
 import com.kappdev.recipesbook.core.presentation.common.components.InputField
 import com.kappdev.recipesbook.core.presentation.common.components.LoadingDialog
 import com.kappdev.recipesbook.core.presentation.common.components.SelectorField
-import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
@@ -137,7 +135,13 @@ fun AddEditRecipeScreen(
                     (recipeId != null) -> stringResource(R.string.edit_recipe_title)
                     else -> stringResource(R.string.new_recipe_title)
                 },
-                onBack = { showSaveDialog = true }
+                onBack = {
+                    if (viewModel.dataIsEmpty()) {
+                        navController.popBackStack()
+                    } else {
+                        showSaveDialog = true
+                    }
+                }
             )
         }
     ) { paddingValues ->
@@ -158,8 +162,6 @@ fun AddEditRecipeScreen(
                     viewModel.removeImage(image)
                 }
             )
-
-            VerticalSpace(16.dp)
 
             InputField(
                 value = recipeName,

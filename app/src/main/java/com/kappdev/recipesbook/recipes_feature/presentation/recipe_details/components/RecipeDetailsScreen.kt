@@ -89,14 +89,7 @@ fun RecipeDetailsScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Box {
-                SubcomposeAsyncImage(
-                    model = recipe.images.firstOrNull(),
-                    contentDescription = stringResource(R.string.recipe_image),
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(240.dp)
-                )
+                PhotosViewer(photos = recipe.images)
 
                 Actions(
                     onBack = { navController.popBackStack() },

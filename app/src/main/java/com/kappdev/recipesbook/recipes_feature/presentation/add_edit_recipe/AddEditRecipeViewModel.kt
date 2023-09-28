@@ -10,7 +10,6 @@ import com.kappdev.recipesbook.core.domain.ViewModelWithLoading
 import com.kappdev.recipesbook.core.domain.model.ImageSource
 import com.kappdev.recipesbook.core.domain.util.GenerateId
 import com.kappdev.recipesbook.core.domain.util.Result
-import com.kappdev.recipesbook.core.domain.util.ResultState
 import com.kappdev.recipesbook.core.domain.util.getMessageOrEmpty
 import com.kappdev.recipesbook.core.presentation.common.SnackbarState
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
@@ -121,6 +120,11 @@ class AddEditRecipeViewModel @Inject constructor(
         _images.addAll(
             recipe.images.map { ImageSource.Url(it) }
         )
+    }
+
+    fun dataIsEmpty(): Boolean {
+        return recipeName.value.isEmpty() && recipeDescription.value.isEmpty() &&
+                method.value.isEmpty() && ingredients.value.isEmpty() && images.isEmpty()
     }
 
     fun removeImage(image: ImageSource) {
