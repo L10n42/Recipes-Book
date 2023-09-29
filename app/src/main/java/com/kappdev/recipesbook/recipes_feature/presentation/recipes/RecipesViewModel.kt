@@ -13,9 +13,12 @@ import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
 import com.kappdev.recipesbook.recipes_feature.domain.model.User
 import com.kappdev.recipesbook.recipes_feature.domain.repository.ProfileRepository
 import com.kappdev.recipesbook.recipes_feature.domain.use_case.GetRecipes
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.Search
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -28,14 +31,19 @@ class RecipesViewModel @Inject constructor(
     private val getRecipes: GetRecipes,
     @ApplicationContext private val context: Context
 ) : ViewModelWithLoading() {
+    private val search = Search()
 
     var searchArg = mutableStateOf("")
         private set
 
+    private var sourceRecipes: List<RecipeCard> = emptyList()
     var recipes = mutableStateOf<List<RecipeCard>>(emptyList())
+        private set
 
     var user = mutableStateOf(User())
         private set
+
+    private var searchJob: Job? = null
 
     private val _navigateRoute = MutableSharedFlow<String>()
     val navigateRoute = _navigateRoute.asSharedFlow()
@@ -55,7 +63,7 @@ class RecipesViewModel @Inject constructor(
     fun getRecipesData() {
         viewModelScope.launch(Dispatchers.IO) {
             getRecipes().collectLatest { recipesList ->
-                recipes.value = recipesList
+                updateRecipes(recipesList)
             }
         }
     }
@@ -72,8 +80,13 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
+    private fun updateRecipes(data: List<RecipeCard>) {
+        sourceRecipes = data
+        searchRecipe(searchArg.value)
+    }
+
     fun getRandomRecipe(): RecipeCard {
-        return recipes.value.random()
+        return sourceRecipes.random()
     }
 
     fun addNewRecipe() {
@@ -95,8 +108,13 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
-    fun search(value: String) {
+    fun searchRecipe(value: String) {
         searchArg.value = value
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch(Dispatchers.IO) {
+            delay(600)
+            recipes.value = search(searchArg.value, sourceRecipes)
+        }
     }
 
     private suspend fun navigateTo(screen: Screen) {

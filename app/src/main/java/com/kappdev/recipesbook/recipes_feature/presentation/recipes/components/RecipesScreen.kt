@@ -41,6 +41,7 @@ fun RecipesScreen(
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val listState = rememberLazyListState()
+    val searchArg = viewModel.searchArg.value
     val isLoading = viewModel.isLoading.value
     val recipes = viewModel.recipes.value
 
@@ -109,7 +110,7 @@ fun RecipesScreen(
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
             ) {
                 items(recipes, { it.id }) { item ->
-                    RecipeCard(data = item) {
+                    RecipeCard(data = item, highlightArg = searchArg) {
                         navController.navigateWithValue(
                             route = Screen.RecipeDetail.route,
                             valueKey = NavConst.RECIPE_ID_KEY,

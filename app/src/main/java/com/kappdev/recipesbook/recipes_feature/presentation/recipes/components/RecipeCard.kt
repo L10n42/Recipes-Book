@@ -1,6 +1,5 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.recipes.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -40,6 +39,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -47,6 +48,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
+import com.kappdev.recipesbook.recipes_feature.domain.use_case.Highlight
+import com.kappdev.recipesbook.ui.theme.Vermilion
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
@@ -54,6 +57,7 @@ import kotlinx.coroutines.isActive
 @Composable
 fun RecipeCard(
     data: RecipeCard,
+    highlightArg: String = "",
     onClick: () -> Unit
 ) {
     var descriptionLineCount by remember { mutableIntStateOf(0) }
@@ -82,6 +86,7 @@ fun RecipeCard(
                 name = data.name,
                 description = data.description,
                 isImageVisible = isImageVisible,
+                highlightArg = highlightArg,
                 onLineCountChange = { lineCount ->
                     descriptionLineCount = lineCount
                 }
@@ -95,6 +100,7 @@ private fun RecipeInfo(
     name: String,
     description: String,
     isImageVisible: Boolean,
+    highlightArg: String,
     onLineCountChange: (lineCount: Int) -> Unit
 ) {
     val clickInteractionSource = remember { MutableInteractionSource() }
@@ -115,13 +121,14 @@ private fun RecipeInfo(
             }
             .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
-        RecipeName(name = name, color = textColor)
+        RecipeName(name, textColor, highlightArg)
 
         if (description.isNotBlank()) {
             RecipeDescription(
-                description = description,
-                expanded = expandedDescription,
                 color = textColor,
+                description = description,
+                highlightArg = highlightArg,
+                expanded = expandedDescription,
                 onLineCountChange = onLineCountChange
             )
         }
@@ -133,15 +140,23 @@ private fun RecipeDescription(
     description: String,
     expanded: Boolean,
     color: Color,
+    highlightArg: String,
     onLineCountChange: (lineCount: Int) -> Unit
 ) {
+    var text by remember { mutableStateOf(AnnotatedString("")) }
+
     val maxLines by animateIntAsState(
         targetValue = if (expanded) 4 else 1,
         label = "max description lines"
     )
 
+    LaunchedEffect(description, highlightArg) {
+        val highlight = Highlight(HighlightStyle)
+        text = highlight(arg = highlightArg, into = description)
+    }
+
     Text(
-        text = description,
+        text = text,
         fontSize = 14.sp,
         maxLines = maxLines,
         lineHeight = 16.sp,
@@ -156,10 +171,18 @@ private fun RecipeDescription(
 @Composable
 private fun RecipeName(
     name: String,
-    color: Color
+    color: Color,
+    highlightArg: String,
 ) {
+    var text by remember { mutableStateOf(AnnotatedString("")) }
+
+    LaunchedEffect(name, highlightArg) {
+        val highlight = Highlight(HighlightStyle)
+        text = highlight(arg = highlightArg, into = name)
+    }
+
     Text(
-        text = name,
+        text = text,
         fontSize = 16.sp,
         maxLines = 1,
         color = color,
@@ -167,6 +190,8 @@ private fun RecipeName(
         overflow = TextOverflow.Ellipsis
     )
 }
+
+private val HighlightStyle = SpanStyle(color = Vermilion, fontWeight = FontWeight.SemiBold)
 
 @Composable
 private fun Shade(

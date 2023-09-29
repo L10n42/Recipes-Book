@@ -98,7 +98,7 @@ fun RecipesTopBar(
                 value = searchValue,
                 openFilters = { /*TODO*/ },
                 modifier = Modifier.padding(horizontal = 16.dp),
-                onValueChange = viewModel::search
+                onValueChange = viewModel::searchRecipe
             )
 
             VerticalSpace(16.dp)
