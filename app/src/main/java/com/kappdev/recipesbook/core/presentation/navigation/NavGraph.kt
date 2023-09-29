@@ -32,15 +32,38 @@ fun SetupNavGraph(
         navController = navController,
         startDestination = startScreen.route
     ) {
-        composable(Screen.Greeting.route) {
+        composable(
+            Screen.Greeting.route,
+            enterTransition = {
+                when (this.initialState.destination.route) {
+                    Screen.Login.route, Screen.SignUp.route, Screen.Recipes.route -> slideInRight()
+                    else -> null
+                }
+            },
+            exitTransition = { slideOutLeft() },
+            popEnterTransition = { slideInRight() },
+            popExitTransition = { slideOutLeft() }
+        ) {
             GreetingScreen(navController)
         }
 
-        composable(Screen.Login.route) {
+        composable(
+            Screen.Login.route,
+            enterTransition = { slideInLeft() },
+            exitTransition = { slideOutLeft() },
+            popEnterTransition = { slideInRight() },
+            popExitTransition = { slideOutRight() }
+        ) {
             LoginScreen(navController)
         }
 
-        composable(Screen.SignUp.route) {
+        composable(
+            Screen.SignUp.route,
+            enterTransition = { slideInLeft() },
+            exitTransition = { slideOutLeft() },
+            popEnterTransition = { slideInRight() },
+            popExitTransition = { slideOutRight() }
+        ) {
             SignUpScreen(navController)
         }
 
@@ -49,12 +72,14 @@ fun SetupNavGraph(
             enterTransition = {
                 when (this.initialState.destination.route) {
                     Screen.RecipeDetail.route -> null
+                    Screen.Login.route -> slideInLeft()
                     else -> slideInRight()
                 }
             },
             exitTransition = {
                 when (this.targetState.destination.route) {
                     Screen.RecipeDetail.route -> null
+                    Screen.Greeting.route -> slideOutRight()
                     else -> slideOutLeft()
                 }
             },

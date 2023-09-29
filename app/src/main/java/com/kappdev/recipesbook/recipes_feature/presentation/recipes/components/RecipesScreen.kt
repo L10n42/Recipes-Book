@@ -41,7 +41,6 @@ fun RecipesScreen(
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
     val listState = rememberLazyListState()
-    val user = viewModel.user.value
     val isLoading = viewModel.isLoading.value
     val recipes = viewModel.recipes.value
 
@@ -92,7 +91,7 @@ fun RecipesScreen(
         },
         drawerShape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp),
         drawerContent = {
-            RecipesDrawer(user, viewModel) {
+            RecipesDrawer(navController, viewModel) {
                 scaffoldState.drawerState.close()
             }
         }

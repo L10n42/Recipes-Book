@@ -72,6 +72,10 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
+    fun getRandomRecipe(): RecipeCard {
+        return recipes.value.random()
+    }
+
     fun addNewRecipe() {
         viewModelScope.launch {
             navigateTo(Screen.AddEditRecipe)

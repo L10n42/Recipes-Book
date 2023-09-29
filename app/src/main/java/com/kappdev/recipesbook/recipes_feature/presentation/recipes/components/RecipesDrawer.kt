@@ -35,20 +35,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.presentation.common.components.PictureBackground
 import com.kappdev.recipesbook.core.presentation.common.components.ProfileImage
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
-import com.kappdev.recipesbook.recipes_feature.domain.model.User
+import com.kappdev.recipesbook.core.presentation.navigation.NavConst
+import com.kappdev.recipesbook.core.presentation.navigation.Screen
+import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
 import com.kappdev.recipesbook.recipes_feature.presentation.recipes.RecipesViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun RecipesDrawer(
-    user: User,
+    navController: NavHostController,
     viewModel: RecipesViewModel,
     closeDrawer: suspend () -> Unit
 ) {
+    val user = viewModel.user.value
     val scope = rememberCoroutineScope()
     val pickPhotoLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
@@ -110,7 +114,14 @@ fun RecipesDrawer(
             }
 
             DrawerItem(icon = Icons.Rounded.Shuffle, titleRes = R.string.randrom_recipe_title) {
-                /* TODO: go to open random recipe */
+                scope.launch {
+                    closeDrawer()
+                    navController.navigateWithValue(
+                        route = Screen.RecipeDetail.route,
+                        valueKey = NavConst.RECIPE_ID_KEY,
+                        value = viewModel.getRandomRecipe().id
+                    )
+                }
             }
 
             DrawerDivider()
