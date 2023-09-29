@@ -54,6 +54,19 @@ fun KeyboardLaunchedEffect(
 }
 
 @Composable
+fun KeyboardClosedEffect(
+    block: suspend CoroutineScope.() -> Unit
+) {
+    val keyboardState by keyboardAsState()
+
+    LaunchedEffect(keyboardState) {
+        if (keyboardState == Keyboard.Closed) {
+            block()
+        }
+    }
+}
+
+@Composable
 fun KeyboardOpenedEffect(
     block: suspend CoroutineScope.() -> Unit
 ) {

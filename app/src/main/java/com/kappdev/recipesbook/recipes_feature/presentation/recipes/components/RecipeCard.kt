@@ -18,11 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.presentation.common.components.ErrorImage
+import com.kappdev.recipesbook.core.presentation.common.components.ImageLoadingAnimation
 import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
 import com.kappdev.recipesbook.recipes_feature.domain.use_case.Highlight
 import com.kappdev.recipesbook.ui.theme.Vermilion
@@ -73,7 +71,10 @@ fun RecipeCard(
         Box(
             contentAlignment = Alignment.BottomCenter
         ) {
-            RecipeImage(data.images) {
+            RecipeImage(
+                images = data.images,
+                isLoaded = isImageVisible
+            ) {
                 isImageVisible = true
             }
 
@@ -228,16 +229,19 @@ private fun Shade(
 @Composable
 private fun RecipeImage(
     images: List<String>,
+    isLoaded: Boolean,
     onLoaded: () -> Unit
 ) {
     var currentImageIndex by remember { mutableIntStateOf(0) }
 
-    LaunchedEffect(images) {
-        while (this.isActive) {
-            delay(IMAGE_SWITCH_DELAY)
-            currentImageIndex = if (currentImageIndex < images.lastIndex) {
-                currentImageIndex + 1
-            } else 0
+    LaunchedEffect(images, isLoaded) {
+        if (isLoaded) {
+            while (this.isActive) {
+                delay(IMAGE_SWITCH_DELAY)
+                currentImageIndex = if (currentImageIndex < images.lastIndex) {
+                    currentImageIndex + 1
+                } else 0
+            }
         }
     }
 
@@ -256,15 +260,9 @@ private fun RecipeImage(
             model = images.getOrNull(index),
             contentDescription = stringResource(R.string.recipe_image),
             contentScale = ContentScale.Crop,
-            onSuccess = {
-                onLoaded()
-            },
-            loading = {
-                EmptyRecipeImage()
-            },
-            error = {
-                EmptyRecipeImage()
-            },
+            loading = { ImageLoadingAnimation() },
+            error = { ErrorImage() },
+            onSuccess = { onLoaded() },
             modifier = Modifier.fillMaxSize()
         )
     }
@@ -272,20 +270,3 @@ private fun RecipeImage(
 
 private const val IMAGE_SWITCH_DURATION = 2_000
 private const val IMAGE_SWITCH_DELAY = 6_000L
-
-@Composable
-private fun EmptyRecipeImage() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = Icons.Rounded.Image,
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(0.8f),
-            tint = MaterialTheme.colorScheme.onBackground
-        )
-    }
-}

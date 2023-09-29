@@ -22,12 +22,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.presentation.common.KeyboardClosedEffect
+import com.kappdev.recipesbook.core.presentation.common.KeyboardLaunchedEffect
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
 import com.kappdev.recipesbook.recipes_feature.presentation.recipes.RecipesViewModel
 
@@ -38,6 +41,7 @@ fun RecipesTopBar(
     newRecipe: () -> Unit,
     showDrawer: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
     val searchValue = viewModel.searchArg.value
     val transition = updateTransition(targetState = scrolled, label = "scrolled state")
 
@@ -47,6 +51,10 @@ fun RecipesTopBar(
 
     val animatedShadow by transition.animateDp(label = "shadow") { isScrolled ->
         if (isScrolled) 12.dp else 0.dp
+    }
+    
+    KeyboardClosedEffect {
+        focusManager.clearFocus()
     }
 
     Surface(

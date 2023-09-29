@@ -25,7 +25,6 @@ import androidx.compose.material.icons.rounded.FastRewind
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -39,7 +38,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
-import kotlinx.coroutines.delay
+import com.kappdev.recipesbook.core.presentation.common.components.ErrorImage
+import com.kappdev.recipesbook.core.presentation.common.components.ImageLoadingAnimation
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -63,7 +63,9 @@ fun PhotosViewer(
                 model = photos[index],
                 contentDescription = stringResource(R.string.recipe_image),
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                loading = { ImageLoadingAnimation() },
+                error = { ErrorImage() }
             )
         }
 

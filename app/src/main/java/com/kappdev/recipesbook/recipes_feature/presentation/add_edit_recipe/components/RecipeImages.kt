@@ -20,9 +20,7 @@ import androidx.compose.material.IconButton
 import androidx.compose.material.Surface
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.AddPhotoAlternate
-import androidx.compose.material.icons.rounded.BrokenImage
 import androidx.compose.material.icons.rounded.Close
-import androidx.compose.material.icons.rounded.Image
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -35,7 +33,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.domain.model.ImageSource
-import io.grpc.okhttp.internal.Platform
+import com.kappdev.recipesbook.core.presentation.common.components.ErrorImage
+import com.kappdev.recipesbook.core.presentation.common.components.ImageLoadingAnimation
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -114,12 +113,8 @@ private fun ImageCard(
             contentDescription = stringResource(R.string.recipe_image),
             contentScale = ContentScale.Crop,
             modifier = Modifier.fillMaxSize(),
-            error = {
-                EmptyImage(icon = Icons.Rounded.BrokenImage)
-            },
-            loading = {
-                EmptyImage(icon = Icons.Rounded.Image)
-            }
+            loading = { ImageLoadingAnimation() },
+            error = { ErrorImage() }
         )
 
         IconButton(
