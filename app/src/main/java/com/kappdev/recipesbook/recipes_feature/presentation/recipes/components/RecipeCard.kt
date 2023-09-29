@@ -1,8 +1,14 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.recipes.components
 
+import android.util.Log
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.animateIntAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -21,6 +27,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -40,6 +47,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.recipes_feature.domain.model.RecipeCard
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +69,7 @@ fun RecipeCard(
         Box(
             contentAlignment = Alignment.BottomCenter
         ) {
-            RecipeImage(model = data.images.first()) {
+            RecipeImage(data.images) {
                 isImageVisible = true
             }
 
@@ -193,25 +202,51 @@ private fun Shade(
 
 @Composable
 private fun RecipeImage(
-    model: Any?,
+    images: List<String>,
     onLoaded: () -> Unit
 ) {
-    SubcomposeAsyncImage(
-        model = model,
-        contentDescription = stringResource(R.string.recipe_image),
-        contentScale = ContentScale.Crop,
-        onSuccess = {
-            onLoaded()
+    var currentImageIndex by remember { mutableIntStateOf(0) }
+
+    LaunchedEffect(images) {
+        while (this.isActive) {
+            delay(IMAGE_SWITCH_DELAY)
+            currentImageIndex = if (currentImageIndex < images.lastIndex) {
+                currentImageIndex + 1
+            } else 0
+        }
+    }
+
+    AnimatedContent(
+        targetState = currentImageIndex,
+        transitionSpec = {
+            fadeIn(
+                animationSpec = tween(IMAGE_SWITCH_DURATION)
+            ) togetherWith fadeOut(
+                animationSpec = tween(IMAGE_SWITCH_DURATION)
+            )
         },
-        loading = {
-            EmptyRecipeImage()
-        },
-        error = {
-            EmptyRecipeImage()
-        },
-        modifier = Modifier.fillMaxSize()
-    )
+        label = "animated image switch"
+    ) { index ->
+        SubcomposeAsyncImage(
+            model = images.getOrNull(index),
+            contentDescription = stringResource(R.string.recipe_image),
+            contentScale = ContentScale.Crop,
+            onSuccess = {
+                onLoaded()
+            },
+            loading = {
+                EmptyRecipeImage()
+            },
+            error = {
+                EmptyRecipeImage()
+            },
+            modifier = Modifier.fillMaxSize()
+        )
+    }
 }
+
+private const val IMAGE_SWITCH_DURATION = 2_000
+private const val IMAGE_SWITCH_DELAY = 6_000L
 
 @Composable
 private fun EmptyRecipeImage() {
