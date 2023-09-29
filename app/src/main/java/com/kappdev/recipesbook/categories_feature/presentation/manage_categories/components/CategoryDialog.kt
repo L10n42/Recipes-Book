@@ -1,4 +1,4 @@
-package com.kappdev.recipesbook.recipes_feature.presentation.method_steps.components
+package com.kappdev.recipesbook.categories_feature.presentation.manage_categories.components
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,21 +26,20 @@ import com.kappdev.recipesbook.core.presentation.common.components.AnimatedTrans
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultDialogPlatform
 import com.kappdev.recipesbook.core.presentation.common.components.InputField
 import com.kappdev.recipesbook.core.presentation.common.components.TextDialogButton
-import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 
 @Composable
-fun StepDialog(
+fun CategoryDialog(
     initialData: String?,
     onDismiss: () -> Unit,
     onConfirm: (String) -> Unit
 ) {
-    var description by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     val canConfirm by remember {
-        derivedStateOf { description.isNotBlank() }
+        derivedStateOf { name.isNotBlank() }
     }
 
     LaunchedEffect(Unit) {
-        description = initialData ?: ""
+        name = initialData ?: ""
     }
 
     AnimatedTransitionDialog(
@@ -56,7 +55,7 @@ fun StepDialog(
             )
 
             InputField(
-                value = description,
+                value = name,
                 singleLine = false,
                 hint = stringResource(R.string.description),
                 modifier = Modifier.fillMaxWidth(),
@@ -67,11 +66,11 @@ fun StepDialog(
                 ),
                 onActionClick = {
                     if (canConfirm) {
-                        onConfirm(description)
+                        onConfirm(name)
                         dialogHelper.triggerAnimatedDismiss()
                     }
                 },
-                onValueChange = { description = it }
+                onValueChange = { name = it }
             )
 
             Row(
@@ -86,7 +85,7 @@ fun StepDialog(
                     title = getButtonTitle(data = initialData),
                     enable = canConfirm
                 ) {
-                    onConfirm(description)
+                    onConfirm(name)
                     dialogHelper.triggerAnimatedDismiss()
                 }
             }
@@ -106,8 +105,8 @@ private fun getButtonTitle(data: String?): String {
 @Composable
 private fun getDialogTitle(data: String?): String {
     return if (data != null) {
-        stringResource(R.string.edit_step)
+        stringResource(R.string.edit_category)
     } else {
-        stringResource(R.string.new_step)
+        stringResource(R.string.new_category)
     }
 }

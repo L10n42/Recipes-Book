@@ -40,8 +40,7 @@ class SignUpViewModel @Inject constructor(
     var profileImageUri = mutableStateOf<Uri?>(null)
         private set
 
-    private val snackbarState = SnackbarState(context)
-    val snackbarMessage = snackbarState.message
+    val snackbarState = SnackbarState(context)
 
     fun signUpUser() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -78,12 +77,6 @@ class SignUpViewModel @Inject constructor(
             password = password.value,
             profile = profileImageUri.value
         )
-    }
-
-    fun clearSnackbarMessage() {
-        viewModelScope.launch {
-            snackbarState.clear()
-        }
     }
 
     fun setUsername(value: String) {

@@ -12,6 +12,7 @@ object Firestore {
         const val USER_NAME = "name"
         const val USER_EMAIL = "email"
         const val USER_PROFILE_IMAGE = "profile_image"
+        const val USER_CATEGORIES = "user_categories"
     }
 
 }

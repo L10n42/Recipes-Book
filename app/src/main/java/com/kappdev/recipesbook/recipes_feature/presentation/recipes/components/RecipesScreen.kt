@@ -59,15 +59,8 @@ fun RecipesScreen(
     }
 
     SnackbarHandler(
-        snackbarState = scaffoldState.snackbarHostState,
-        snackbarMessage = viewModel.snackbarMessage,
-        onDismiss = {
-            viewModel.clearSnackbarMessage()
-        },
-        onAction = { dismiss ->
-            viewModel.clearSnackbarMessage()
-            dismiss()
-        }
+        hostState = scaffoldState.snackbarHostState,
+        snackbarState = viewModel.snackbarState
     )
 
     Scaffold(

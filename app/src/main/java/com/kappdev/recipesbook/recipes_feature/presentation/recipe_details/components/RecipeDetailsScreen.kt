@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.SnackbarHostState
@@ -25,7 +24,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -34,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.SubcomposeAsyncImage
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.presentation.common.DefaultSnackbarHost
 import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
@@ -64,15 +61,8 @@ fun RecipeDetailsScreen(
     NavigationHandler(navController = navController, navigateRoute = viewModel.navigateRoute)
 
     SnackbarHandler(
-        snackbarState = snackbarState,
-        snackbarMessage = viewModel.snackbarMessage,
-        onDismiss = {
-            viewModel.clearSnackbarMessage()
-        },
-        onAction = { dismiss ->
-            viewModel.clearSnackbarMessage()
-            dismiss()
-        }
+        hostState = snackbarState,
+        snackbarState = viewModel.snackbarState
     )
 
     LaunchedEffect(Unit) {

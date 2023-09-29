@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.Shuffle
@@ -121,6 +122,13 @@ fun RecipesDrawer(
                         valueKey = NavConst.RECIPE_ID_KEY,
                         value = viewModel.getRandomRecipe().id
                     )
+                }
+            }
+
+            DrawerItem(icon = Icons.Rounded.Category, titleRes = R.string.categories_title) {
+                scope.launch {
+                    closeDrawer()
+                    navController.navigate(Screen.ManageCategories.route)
                 }
             }
 

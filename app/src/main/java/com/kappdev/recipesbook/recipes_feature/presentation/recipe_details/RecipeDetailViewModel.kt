@@ -33,8 +33,7 @@ class RecipeDetailViewModel @Inject constructor(
     private val _navigateRoute = MutableSharedFlow<String>()
     val navigateRoute = _navigateRoute.asSharedFlow()
 
-    private val snackbarState = SnackbarState(context)
-    val snackbarMessage = snackbarState.message
+    val snackbarState = SnackbarState(context)
 
     fun deleteCurrentRecipe() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,11 +59,5 @@ class RecipeDetailViewModel @Inject constructor(
 
     private suspend fun navigateTo(screen: Screen) {
         _navigateRoute.emit(screen.route)
-    }
-
-    fun clearSnackbarMessage() {
-        viewModelScope.launch {
-            snackbarState.clear()
-        }
     }
 }

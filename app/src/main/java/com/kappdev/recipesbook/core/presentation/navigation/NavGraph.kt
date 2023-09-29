@@ -16,6 +16,7 @@ import androidx.navigation.compose.composable
 import com.kappdev.recipesbook.auth_feature.presentation.greeting.components.GreetingScreen
 import com.kappdev.recipesbook.auth_feature.presentation.login.components.LoginScreen
 import com.kappdev.recipesbook.auth_feature.presentation.sign_up.components.SignUpScreen
+import com.kappdev.recipesbook.categories_feature.presentation.manage_categories.components.ManageCategoriesScreen
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.components.AddEditRecipeScreen
 import com.kappdev.recipesbook.recipes_feature.presentation.ingredients.components.IngredientsScreen
@@ -137,6 +138,16 @@ fun SetupNavGraph(
         ) { stackEntry ->
             val method = stackEntry.catchValue<List<String>>(NavConst.METHOD_STEPS_KEY) ?: emptyList()
             AddEditMethodScreen(navController, method)
+        }
+
+        composable(
+            Screen.ManageCategories.route,
+            enterTransition = { slideInLeft() },
+            exitTransition = { slideOutRight() },
+            popEnterTransition = { slideInRight() },
+            popExitTransition = { slideOutRight() }
+        ) {
+            ManageCategoriesScreen(navController)
         }
 
         composable(

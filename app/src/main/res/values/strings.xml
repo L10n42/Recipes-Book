@@ -52,4 +52,14 @@
     <string name="save_changes_msg">Do you want save changes before exit?</string>
     <string name="discard">Discard</string>
     <string name="delete_image_icon">delete_image_icon</string>
+    <string name="categories_title">Categories</string>
+    <string name="edit_category">Edit category</string>
+    <string name="new_category">New category</string>
+
+    <string-array name="default_categories">
+        <item>Desserts</item>
+        <item>Main dishes</item>
+        <item>Drinks</item>
+        <item>Appetizers</item>
+    </string-array>
 </resources>

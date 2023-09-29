@@ -48,9 +48,7 @@ class RecipesViewModel @Inject constructor(
     private val _navigateRoute = MutableSharedFlow<String>()
     val navigateRoute = _navigateRoute.asSharedFlow()
 
-    private val snackbarState = SnackbarState(context)
-    val snackbarMessage = snackbarState.message
-
+    val snackbarState = SnackbarState(context)
 
     fun getUserData() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -99,12 +97,6 @@ class RecipesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             profileRepository.logout()
             navigateTo(Screen.Greeting)
-        }
-    }
-
-    fun clearSnackbarMessage() {
-        viewModelScope.launch {
-            snackbarState.clear()
         }
     }
 

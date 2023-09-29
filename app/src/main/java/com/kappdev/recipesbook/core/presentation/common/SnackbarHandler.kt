@@ -11,25 +11,31 @@ import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun SnackbarHandler(
-    snackbarState: SnackbarHostState,
-    snackbarMessage: SharedFlow<String>,
+    hostState: SnackbarHostState,
+    snackbarState: SnackbarState,
     actionLabel: String = stringResource(R.string.dismiss),
     onDismiss: () -> Unit = {},
-    onAction: (dismiss: () -> Unit) -> Unit = { snackbarState.hideSnackbar() }
+    onAction: () -> Unit = {}
 ) {
-    val message = snackbarMessage.collectAsState(initial = "")
-    val dismiss = {
-        snackbarState.hideSnackbar()
-    }
+    val message = snackbarState.message.collectAsState(initial = "")
+    val dismiss = { hostState.hideSnackbar() }
+
     LaunchedEffect(message.value) {
         if (message.value.isNotBlank()) {
-            val snackbarResult = snackbarState.showSnackbar(
+            val snackbarResult = hostState.showSnackbar(
                 message = message.value,
                 actionLabel = actionLabel
             )
             when (snackbarResult) {
-                SnackbarResult.Dismissed -> onDismiss()
-                SnackbarResult.ActionPerformed -> onAction(dismiss)
+                SnackbarResult.Dismissed -> {
+                    snackbarState.clear()
+                    onDismiss()
+                }
+                SnackbarResult.ActionPerformed -> {
+                    snackbarState.clear()
+                    dismiss()
+                    onAction()
+                }
             }
         }
     }

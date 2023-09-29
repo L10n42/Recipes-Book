@@ -57,7 +57,7 @@ fun IngredientDialog(
 
     AnimatedTransitionDialog(
         onDismissRequest = onDismiss,
-        modifier = Modifier.padding(bottom = 64.dp)
+        modifier = Modifier.padding(bottom = 100.dp)
     ) { dialogHelper ->
         DefaultDialogPlatform {
             val focusManager = LocalFocusManager.current

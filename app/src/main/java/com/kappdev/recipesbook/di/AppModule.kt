@@ -1,11 +1,16 @@
 package com.kappdev.recipesbook.di
 
+import android.app.Application
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.kappdev.recipesbook.auth_feature.data.repository.AuthRepositoryImpl
 import com.kappdev.recipesbook.auth_feature.domain.repository.AuthRepository
+import com.kappdev.recipesbook.categories_feature.data.repository.CategoriesRepositoryImpl
+import com.kappdev.recipesbook.categories_feature.domain.repository.CategoriesRepository
+import com.kappdev.recipesbook.categories_feature.domain.use_case.GetCategories
+import com.kappdev.recipesbook.categories_feature.domain.use_case.InsertCategories
 import com.kappdev.recipesbook.recipes_feature.data.repository.ProfileRepositoryImpl
 import com.kappdev.recipesbook.recipes_feature.data.repository.RecipeRepositoryImpl
 import com.kappdev.recipesbook.recipes_feature.data.repository.StorageRepositoryImpl
@@ -68,6 +73,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideCategoriesRepository(auth: FirebaseAuth, firestore: FirebaseFirestore,  app: Application): CategoriesRepository {
+        return CategoriesRepositoryImpl(auth = auth, firestore = firestore, app)
+    }
+
+    @Provides
+    @Singleton
     fun provideStorageRepository(storage: FirebaseStorage,): StorageRepository {
         return StorageRepositoryImpl(storage = storage)
     }
@@ -88,5 +99,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGetRecipesUseCase(repository: RecipeRepository): GetRecipes = GetRecipes(repository)
+    fun provideGetRecipesUseCase(repository: RecipeRepository) = GetRecipes(repository)
+
+    @Provides
+    @Singleton
+    fun provideGetCategoriesUseCase(repository: CategoriesRepository) = GetCategories(repository)
+
+    @Provides
+    @Singleton
+    fun provideInsertCategoriesUseCase(repository: CategoriesRepository) = InsertCategories(repository)
 }
