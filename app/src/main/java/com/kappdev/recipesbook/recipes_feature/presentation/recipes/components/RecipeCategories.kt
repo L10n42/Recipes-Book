@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -33,6 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.kappdev.recipesbook.core.presentation.common.components.leftEdgeShade
+import com.kappdev.recipesbook.core.presentation.common.components.rightEdgeShade
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -42,7 +45,6 @@ fun RecipeCategories(
     selectedCategory: Int,
     onSelect: (Int) -> Unit
 ) {
-    val density = LocalDensity.current
     val listState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     val itemWidths = remember { mutableStateListOf<Int>() }
@@ -51,8 +53,7 @@ fun RecipeCategories(
     LaunchedEffect(selectedCategory) {
         val halfRowWidth = rowWidth / 2
         val halfItemWidth = itemWidths.getOrElse(selectedCategory) { 0 } / 2
-        val padding = with(density) { 8.dp.toPx().roundToInt() }
-        val offset = halfRowWidth - halfItemWidth - padding
+        val offset = halfRowWidth - halfItemWidth - listState.layoutInfo.mainAxisItemSpacing
         listState.animateScrollToItem(selectedCategory, scrollOffset = -offset)
     }
 
@@ -60,7 +61,9 @@ fun RecipeCategories(
         state = listState,
         modifier = Modifier
             .fillMaxWidth()
-            .onSizeChanged { rowWidth = it.width },
+            .onSizeChanged { rowWidth = it.width }
+            .rightEdgeShade(color = MaterialTheme.colorScheme.background, isVisible = listState.canScrollForward)
+            .leftEdgeShade(color = MaterialTheme.colorScheme.background, isVisible = listState.canScrollBackward),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -113,7 +116,8 @@ private fun CategoryTab(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = { onClick(position) }
-            ).onSizeChanged(onSizeChanged),
+            )
+            .onSizeChanged(onSizeChanged),
         fontSize = 16.sp,
         fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
         color = textColor

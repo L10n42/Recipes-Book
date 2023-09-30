@@ -27,6 +27,7 @@ import com.kappdev.recipesbook.core.presentation.common.DefaultSnackbarHost
 import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
 import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.LoadingDialog
+import com.kappdev.recipesbook.core.presentation.common.components.bottomEdgeShade
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
@@ -99,7 +100,12 @@ fun RecipesScreen(
                 state = listState,
                 modifier = Modifier
                     .fillMaxSize()
-                    .navigationBarsPadding(),
+                    .navigationBarsPadding()
+                    .bottomEdgeShade(
+                        color = MaterialTheme.colorScheme.background,
+                        isVisible = listState.canScrollForward,
+                        ratio = 0.05f
+                    ),
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
             ) {
