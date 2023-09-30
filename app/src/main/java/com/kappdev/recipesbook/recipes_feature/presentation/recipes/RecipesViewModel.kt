@@ -2,10 +2,13 @@ package com.kappdev.recipesbook.recipes_feature.presentation.recipes
 
 import android.content.Context
 import android.net.Uri
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.viewModelScope
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.categories_feature.domain.use_case.GetCategories
 import com.kappdev.recipesbook.core.domain.ViewModelWithLoading
+import com.kappdev.recipesbook.core.domain.util.Result
 import com.kappdev.recipesbook.core.domain.util.ResultState
 import com.kappdev.recipesbook.core.presentation.common.SnackbarState
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
@@ -29,6 +32,7 @@ import javax.inject.Inject
 class RecipesViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val getRecipes: GetRecipes,
+    private val getCategories: GetCategories,
     @ApplicationContext private val context: Context
 ) : ViewModelWithLoading() {
     private val search = Search()
@@ -36,7 +40,14 @@ class RecipesViewModel @Inject constructor(
     var searchArg = mutableStateOf("")
         private set
 
+    var categories = mutableStateOf<List<String>>(emptyList())
+        private set
+
+    var selectedCategory = mutableIntStateOf(0)
+        private set
+
     private var sourceRecipes: List<RecipeCard> = emptyList()
+    private var searchResultRecipes: List<RecipeCard> = emptyList()
     var recipes = mutableStateOf<List<RecipeCard>>(emptyList())
         private set
 
@@ -44,6 +55,7 @@ class RecipesViewModel @Inject constructor(
         private set
 
     private var searchJob: Job? = null
+    private var filterJob: Job? = null
 
     private val _navigateRoute = MutableSharedFlow<String>()
     val navigateRoute = _navigateRoute.asSharedFlow()
@@ -58,10 +70,20 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
+    fun getCategoriesData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = getCategories()
+            when (result) {
+                is Result.Failure -> TODO()
+                is Result.Success -> categories.value = listOf(CATEGORY_ALL) + result.value
+            }
+        }
+    }
+
     fun getRecipesData() {
         viewModelScope.launch(Dispatchers.IO) {
             getRecipes().collectLatest { recipesList ->
-                updateRecipes(recipesList)
+                updateRecipesData(recipesList)
             }
         }
     }
@@ -78,9 +100,10 @@ class RecipesViewModel @Inject constructor(
         }
     }
 
-    private fun updateRecipes(data: List<RecipeCard>) {
+    private fun updateRecipesData(data: List<RecipeCard>) {
         sourceRecipes = data
         searchRecipe(searchArg.value)
+        filterByCategory()
     }
 
     fun getRandomRecipe(): RecipeCard {
@@ -105,11 +128,32 @@ class RecipesViewModel @Inject constructor(
         searchJob?.cancel()
         searchJob = viewModelScope.launch(Dispatchers.IO) {
             delay(600)
-            recipes.value = search(searchArg.value, sourceRecipes)
+            searchResultRecipes = search(searchArg.value, sourceRecipes)
+            filterByCategory()
         }
+    }
+
+    fun filterByCategory() {
+        filterJob?.cancel()
+        filterJob = viewModelScope.launch {
+            val currentCategory = categories.value.getOrElse(selectedCategory.intValue) { "" }
+            recipes.value = if (currentCategory.isEmpty() || currentCategory == CATEGORY_ALL) {
+                searchResultRecipes
+            } else {
+                searchResultRecipes.filter { card -> (card.category == currentCategory) }
+            }
+        }
+    }
+
+    fun selectCategory(index: Int) {
+        selectedCategory.intValue = index
     }
 
     private suspend fun navigateTo(screen: Screen) {
         _navigateRoute.emit(screen.route)
+    }
+
+    private companion object {
+        const val CATEGORY_ALL = "All categories"
     }
 }

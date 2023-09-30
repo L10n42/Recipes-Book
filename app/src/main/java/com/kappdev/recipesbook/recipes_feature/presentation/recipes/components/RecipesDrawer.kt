@@ -44,6 +44,7 @@ import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
+import com.kappdev.recipesbook.recipes_feature.domain.model.User
 import com.kappdev.recipesbook.recipes_feature.presentation.recipes.RecipesViewModel
 import kotlinx.coroutines.launch
 
@@ -77,32 +78,12 @@ fun RecipesDrawer(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            ProfileImage(
-                model = user.profileImage,
-                size = 100.dp
-            ) {
+            UserInfo(user = user) {
                 scope.launch {
                     closeDrawer()
                     pickPhotoLauncher.launch("image/*")
                 }
             }
-
-            Text(
-                text = user.name,
-                fontSize = 18.sp,
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.SemiBold,
-                overflow = TextOverflow.Ellipsis
-            )
-
-            Text(
-                text = user.email,
-                fontSize = 16.sp,
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.onSurface,
-                overflow = TextOverflow.Ellipsis
-            )
 
             VerticalSpace(8.dp)
             DrawerDivider()
@@ -142,6 +123,41 @@ fun RecipesDrawer(
                 viewModel.logout()
             }
         }
+    }
+}
+
+@Composable
+private fun UserInfo(
+    user: User,
+    updateProfile: () -> Unit
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        ProfileImage(
+            model = user.profileImage,
+            size = 100.dp,
+            onClick = updateProfile
+        )
+
+        VerticalSpace(space = 8.dp)
+
+        Text(
+            text = user.name,
+            fontSize = 18.sp,
+            maxLines = 1,
+            color = MaterialTheme.colorScheme.onSurface,
+            fontWeight = FontWeight.SemiBold,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Text(
+            text = user.email,
+            fontSize = 16.sp,
+            maxLines = 1,
+            color = MaterialTheme.colorScheme.onSurface,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 

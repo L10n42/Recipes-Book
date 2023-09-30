@@ -53,6 +53,7 @@ fun AddEditRecipeScreen(
     navController: NavHostController,
     initialIngredients: List<Ingredient>?,
     initialMethod: List<String>?,
+    initialCategory: String?,
     recipeId: String?,
     viewModel: AddEditRecipeViewModel = hiltViewModel()
 ) {
@@ -61,6 +62,7 @@ fun AddEditRecipeScreen(
     val descriptionBIVR = remember { BringIntoViewRequester() }
     val recipeName = viewModel.recipeName.value
     val recipeDescription = viewModel.recipeDescription.value
+    val recipeCategory = viewModel.recipeCategory.value
     val method = viewModel.method.value
     val ingredients = viewModel.ingredients.value
     val images = viewModel.images
@@ -96,6 +98,8 @@ fun AddEditRecipeScreen(
     LaunchedEffect(Unit) {
         initialIngredients?.let { viewModel.setIngredients(initialIngredients) }
         initialMethod?.let { viewModel.setMethod(initialMethod) }
+        initialCategory?.let { viewModel.setCategory(initialCategory) }
+
         if (recipeId != null && viewModel.recipeId == null) {
             viewModel.getRecipeById(recipeId) {
                 navController.popBackStack()
@@ -161,7 +165,9 @@ fun AddEditRecipeScreen(
                 singleLine = false,
                 hint = stringResource(R.string.name),
                 onValueChange = viewModel::setRecipeName,
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
             )
 
             InputField(
@@ -203,6 +209,23 @@ fun AddEditRecipeScreen(
                     value = method
                 )
             }
+
+            SelectorField(
+                title = stringResource(R.string.category).plusCategory(recipeCategory),
+                checked = recipeCategory.isNotEmpty(),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                navController.navigate(Screen.SelectCategory.route)
+            }
+        }
+    }
+}
+
+private fun String.plusCategory(name: String): String {
+    return buildString {
+        append(this@plusCategory)
+        if (name.isNotEmpty()) {
+            append(": $name")
         }
     }
 }

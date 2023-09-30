@@ -35,6 +35,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.presentation.common.CARD_ANIM_DURATION
+import com.kappdev.recipesbook.core.presentation.common.CARD_ANIM_SCALE
 import com.kappdev.recipesbook.core.presentation.common.FieldDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -67,11 +69,11 @@ fun AnimatedComponentCard(
         enter = fadeIn(
             animationSpec = tween(CARD_ANIM_DURATION)
         ) + scaleIn(
-            initialScale = 0.5f,
+            initialScale = CARD_ANIM_SCALE,
             animationSpec = tween(CARD_ANIM_DURATION)
         ),
         exit = scaleOut(
-            targetScale = 0.5f,
+            targetScale = CARD_ANIM_SCALE,
             animationSpec = tween(CARD_ANIM_DURATION)
         ) + fadeOut(
             animationSpec = tween(CARD_ANIM_DURATION)
@@ -157,5 +159,3 @@ private fun CardDivider(
             .then(modifier)
     )
 }
-
-private const val CARD_ANIM_DURATION = 350

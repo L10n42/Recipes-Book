@@ -51,10 +51,15 @@ class AuthRepositoryImpl @Inject constructor(
             Firestore.Field.USER_UID to uid,
             Firestore.Field.USER_NAME to user.name,
             Firestore.Field.USER_EMAIL to user.email,
-            Firestore.Field.USER_PROFILE_IMAGE to imageUrl
+            Firestore.Field.USER_PROFILE_IMAGE to imageUrl,
+            Firestore.Field.USER_CATEGORIES to getDefaultCategories()
         )
         val users = firestore.collection(Firestore.Collection.USERS)
         users.document(auth.currentUser!!.uid).set(data).await()
+    }
+
+    private fun getDefaultCategories(): List<String> {
+        return context.resources.getStringArray(R.array.default_categories).toList()
     }
 
     private suspend fun Uri.uploadToStorage(): String {

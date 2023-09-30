@@ -73,8 +73,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideCategoriesRepository(auth: FirebaseAuth, firestore: FirebaseFirestore,  app: Application): CategoriesRepository {
-        return CategoriesRepositoryImpl(auth = auth, firestore = firestore, app)
+    fun provideCategoriesRepository(auth: FirebaseAuth, firestore: FirebaseFirestore): CategoriesRepository {
+        return CategoriesRepositoryImpl(auth = auth, firestore = firestore)
     }
 
     @Provides

@@ -43,6 +43,8 @@ fun RecipesTopBar(
 ) {
     val focusManager = LocalFocusManager.current
     val searchValue = viewModel.searchArg.value
+    val categories = viewModel.categories.value
+    val selectedCategory = viewModel.selectedCategory.intValue
     val transition = updateTransition(targetState = scrolled, label = "scrolled state")
 
     val dividerAlpha by transition.animateFloat(label = "divider alpha") { isScrolled ->
@@ -108,6 +110,18 @@ fun RecipesTopBar(
                 modifier = Modifier.padding(horizontal = 16.dp),
                 onValueChange = viewModel::searchRecipe
             )
+
+            if (categories.isNotEmpty()) {
+                VerticalSpace(16.dp)
+                RecipeCategories(
+                    categories = categories,
+                    selectedCategory = selectedCategory,
+                    onSelect = {
+                        viewModel.selectCategory(it)
+                        viewModel.filterByCategory()
+                    }
+                )
+            }
 
             VerticalSpace(16.dp)
             Divider(Modifier.alpha(dividerAlpha))

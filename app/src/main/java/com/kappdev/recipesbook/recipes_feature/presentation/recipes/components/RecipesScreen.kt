@@ -56,6 +56,7 @@ fun RecipesScreen(
     LaunchedEffect(Unit) {
         viewModel.getUserData()
         viewModel.getRecipesData()
+        viewModel.getCategoriesData()
     }
 
     SnackbarHandler(

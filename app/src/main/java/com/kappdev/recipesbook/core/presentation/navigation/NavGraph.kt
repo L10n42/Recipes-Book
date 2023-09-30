@@ -17,6 +17,7 @@ import com.kappdev.recipesbook.auth_feature.presentation.greeting.components.Gre
 import com.kappdev.recipesbook.auth_feature.presentation.login.components.LoginScreen
 import com.kappdev.recipesbook.auth_feature.presentation.sign_up.components.SignUpScreen
 import com.kappdev.recipesbook.categories_feature.presentation.manage_categories.components.ManageCategoriesScreen
+import com.kappdev.recipesbook.categories_feature.presentation.select_category.components.SelectCategoryScreen
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.components.AddEditRecipeScreen
 import com.kappdev.recipesbook.recipes_feature.presentation.ingredients.components.IngredientsScreen
@@ -105,7 +106,7 @@ fun SetupNavGraph(
             enterTransition = { slideInLeft() },
             exitTransition = {
                 when (this.targetState.destination.route) {
-                    Screen.Ingredients.route, Screen.AddEditMethod.route -> slideOutLeft()
+                    Screen.Ingredients.route, Screen.AddEditMethod.route, Screen.SelectCategory.route -> slideOutLeft()
                     else -> slideOutRight()
                 }
             },
@@ -114,8 +115,9 @@ fun SetupNavGraph(
         ) { stackEntry ->
             val ingredients = stackEntry.catchValue<List<Ingredient>>(NavConst.INGREDIENTS_KEY)
             val method = stackEntry.catchValue<List<String>>(NavConst.METHOD_STEPS_KEY)
+            val category = stackEntry.catchValue<String>(NavConst.RECIPE_CATEGORY_KEY)
             val recipeId = stackEntry.catchValue<String>(NavConst.RECIPE_ID_KEY)
-            AddEditRecipeScreen(navController, ingredients, method, recipeId)
+            AddEditRecipeScreen(navController, ingredients, method, category, recipeId)
         }
 
         composable(
@@ -138,6 +140,16 @@ fun SetupNavGraph(
         ) { stackEntry ->
             val method = stackEntry.catchValue<List<String>>(NavConst.METHOD_STEPS_KEY) ?: emptyList()
             AddEditMethodScreen(navController, method)
+        }
+
+        composable(
+            Screen.SelectCategory.route,
+            enterTransition = { slideInLeft() },
+            exitTransition = { slideOutRight() },
+            popEnterTransition = { slideInRight() },
+            popExitTransition = { slideOutRight() }
+        ) {
+            SelectCategoryScreen(navController)
         }
 
         composable(

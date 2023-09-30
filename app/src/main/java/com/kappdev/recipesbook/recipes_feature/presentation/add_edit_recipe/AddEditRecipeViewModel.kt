@@ -44,6 +44,9 @@ class AddEditRecipeViewModel @Inject constructor(
     var recipeDescription = mutableStateOf("")
         private set
 
+    var recipeCategory = mutableStateOf("")
+        private set
+
     var ingredients = mutableStateOf<List<Ingredient>>(emptyList())
         private set
 
@@ -94,6 +97,7 @@ class AddEditRecipeViewModel @Inject constructor(
             id = recipeId ?: GenerateId(),
             name = recipeName.value.trim(),
             description = recipeDescription.value.trim(),
+            category = recipeCategory.value,
             method = method.value,
             images = imageUrls,
             ingredients = ingredients.value
@@ -114,6 +118,7 @@ class AddEditRecipeViewModel @Inject constructor(
         recipeId = recipe.id
         recipeName.value = recipe.name
         recipeDescription.value = recipe.description
+        recipeCategory.value = recipe.category
         method.value = recipe.method
         ingredients.value = recipe.ingredients
         _images.addAll(
@@ -132,6 +137,10 @@ class AddEditRecipeViewModel @Inject constructor(
 
     fun addImage(uri: Uri) {
         _images.add(ImageSource.Uri(uri))
+    }
+
+    fun setCategory(category: String) {
+        this.recipeCategory.value = category
     }
 
     fun setIngredients(ingredients: List<Ingredient>) {

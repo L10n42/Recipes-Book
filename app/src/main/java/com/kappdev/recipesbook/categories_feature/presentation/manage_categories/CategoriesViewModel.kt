@@ -75,12 +75,12 @@ class CategoriesViewModel @Inject constructor(
 
     fun updateCategory(category: String) {
         if (clickedItemIndex != -1) {
-            _categories[clickedItemIndex] = category
+            _categories[clickedItemIndex] = category.trim()
         }
     }
 
     fun addCategory(value: String) {
-        _categories.add(value)
+        _categories.add(value.trim())
     }
 
     fun removeCategory(value: String) {
