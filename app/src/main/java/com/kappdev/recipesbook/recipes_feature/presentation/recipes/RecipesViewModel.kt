@@ -35,6 +35,7 @@ class RecipesViewModel @Inject constructor(
     private val getCategories: GetCategories,
     @ApplicationContext private val context: Context
 ) : ViewModelWithLoading() {
+    private val categoryAll = context.getString(R.string.category_all_categories)
     private val search = Search()
 
     var searchArg = mutableStateOf("")
@@ -75,7 +76,7 @@ class RecipesViewModel @Inject constructor(
             val result = getCategories()
             when (result) {
                 is Result.Failure -> TODO()
-                is Result.Success -> categories.value = listOf(CATEGORY_ALL) + result.value
+                is Result.Success -> categories.value = listOf(categoryAll) + result.value
             }
         }
     }
@@ -137,7 +138,7 @@ class RecipesViewModel @Inject constructor(
         filterJob?.cancel()
         filterJob = viewModelScope.launch {
             val currentCategory = categories.value.getOrElse(selectedCategory.intValue) { "" }
-            recipes.value = if (currentCategory.isEmpty() || currentCategory == CATEGORY_ALL) {
+            recipes.value = if (currentCategory.isEmpty() || currentCategory == categoryAll) {
                 searchResultRecipes
             } else {
                 searchResultRecipes.filter { card -> (card.category == currentCategory) }
@@ -151,9 +152,5 @@ class RecipesViewModel @Inject constructor(
 
     private suspend fun navigateTo(screen: Screen) {
         _navigateRoute.emit(screen.route)
-    }
-
-    private companion object {
-        const val CATEGORY_ALL = "All categories"
     }
 }

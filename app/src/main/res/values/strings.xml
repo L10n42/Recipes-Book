@@ -57,6 +57,7 @@
     <string name="new_category">New category</string>
     <string name="category">Category</string>
     <string name="select_category">Select category</string>
+    <string name="category_all_categories">All categories</string>
 
     <string-array name="default_categories">
         <item>Desserts</item>
