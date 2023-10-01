@@ -21,9 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onSizeChanged
@@ -44,10 +42,9 @@ fun RecipeCategories(
     val listState = rememberLazyListState()
     val snapBehavior = rememberSnapFlingBehavior(lazyListState = listState)
     val itemWidths = remember { MutableList(categories.size) { 0 } }
-    var rowWidth by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(selectedCategory) {
-        val halfRowWidth = rowWidth / 2
+        val halfRowWidth = (listState.layoutInfo.viewportSize.width / 2)
         val halfItemWidth = itemWidths.getOrElse(selectedCategory) { 0 } / 2
         val offset = halfRowWidth - halfItemWidth - listState.layoutInfo.mainAxisItemSpacing
         listState.animateScrollToItem(selectedCategory, scrollOffset = -offset)
@@ -57,7 +54,6 @@ fun RecipeCategories(
         state = listState,
         modifier = Modifier
             .fillMaxWidth()
-            .onSizeChanged { rowWidth = it.width }
             .rightEdgeShade(color = MaterialTheme.colorScheme.background, isVisible = listState.canScrollForward)
             .leftEdgeShade(color = MaterialTheme.colorScheme.background, isVisible = listState.canScrollBackward),
         horizontalArrangement = Arrangement.spacedBy(8.dp),

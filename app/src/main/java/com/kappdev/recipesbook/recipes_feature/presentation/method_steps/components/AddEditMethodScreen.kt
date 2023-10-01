@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -21,6 +22,8 @@ import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.presentation.common.components.ActionButton
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
+import com.kappdev.recipesbook.core.presentation.common.components.bottomEdgeShade
+import com.kappdev.recipesbook.core.presentation.common.components.topEdgeShade
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.goBackWithValue
 import com.kappdev.recipesbook.recipes_feature.presentation.method_steps.AddEditMethodScreenState
@@ -30,6 +33,7 @@ fun AddEditMethodScreen(
     navController: NavHostController,
     initialSteps: List<String>
 ) {
+    val listState = rememberLazyListState()
     val screenState = remember { AddEditMethodScreenState(initialSteps) }
 
     if (screenState.isDialogVisible.value) {
@@ -67,9 +71,21 @@ fun AddEditMethodScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .navigationBarsPadding()
+                .topEdgeShade(
+                    MaterialTheme.colorScheme.background,
+                    isVisible = listState.canScrollBackward,
+                    ratio = 0.05f
+                )
+                .bottomEdgeShade(
+                    MaterialTheme.colorScheme.background,
+                    isVisible = listState.canScrollForward,
+                    ratio = 0.05f
+                ),
+            state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 82.dp)
         ) {
             itemsIndexed(
                 items = screenState.steps,

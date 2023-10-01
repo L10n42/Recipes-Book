@@ -60,6 +60,7 @@
     <string name="category_all_categories">All categories</string>
     <string name="back">Back</string>
     <string name="next">Next</string>
+    <string name="done">Done</string>
 
     <string-array name="default_categories">
         <item>Desserts</item>

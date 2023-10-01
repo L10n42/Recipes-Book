@@ -17,7 +17,7 @@ class InteractiveMethodState(
         _steps.addAll(initialSteps)
     }
 
-
+    fun isOnTheLast() = (currentStep.intValue == steps.lastIndex)
 
     fun nextStep() {
         currentStep.intValue += 1

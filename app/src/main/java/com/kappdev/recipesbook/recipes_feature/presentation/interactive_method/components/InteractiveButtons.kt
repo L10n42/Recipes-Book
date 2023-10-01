@@ -28,7 +28,9 @@ import com.kappdev.recipesbook.core.presentation.common.components.HorizontalSpa
 @Composable
 fun InteractiveButtons(
     onBack: () -> Unit,
-    onNext: () -> Unit
+    onNext: () -> Unit,
+    onDone: () -> Unit,
+    onLast: Boolean
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -52,7 +54,7 @@ fun InteractiveButtons(
                 modifier = Modifier.size(IconSize),
                 contentDescription = stringResource(R.string.back_interaction_button)
             )
-            HorizontalSpace(8.dp)
+            HorizontalSpace(16.dp)
             Text(
                 text = stringResource(R.string.back),
                 fontSize = 18.sp,
@@ -64,7 +66,9 @@ fun InteractiveButtons(
         HorizontalSpace(8.dp)
 
         Button(
-            onClick = onNext,
+            onClick = {
+                if (onLast) onDone() else onNext()
+            },
             shape = RoundedCornerShape(bottomEnd = ButtonCornerShape, topEnd = ButtonCornerShape),
             elevation = ButtonDefaults.buttonElevation(
                 defaultElevation = DefaultButtonsElevation,
@@ -75,12 +79,12 @@ fun InteractiveButtons(
                 .width(ButtonWidth)
         ) {
             Text(
-                text = stringResource(R.string.next),
+                text = if (onLast) stringResource(R.string.done) else stringResource(R.string.next),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Medium,
                 color = MaterialTheme.colorScheme.onPrimary
             )
-            HorizontalSpace(8.dp)
+            HorizontalSpace(16.dp)
             Icon(
                 imageVector = Icons.Rounded.ArrowForwardIos,
                 tint = MaterialTheme.colorScheme.onPrimary,
@@ -97,6 +101,6 @@ private val PressedButtonsElevation = 12.dp
 private val ButtonHeight = 48.dp
 private val ButtonWidth = 132.dp
 
-private val IconSize = 20.dp
+private val IconSize = 18.dp
 
 private val ButtonCornerShape = 16.dp

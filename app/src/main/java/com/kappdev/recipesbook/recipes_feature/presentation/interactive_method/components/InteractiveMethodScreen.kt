@@ -12,9 +12,9 @@ import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -31,6 +31,13 @@ fun InteractiveMethodScreen(
 ) {
     val listState = rememberLazyListState()
     val state = remember { InteractiveMethodState(initialSteps) }
+    val currentStep = state.currentStep.intValue
+
+    LaunchedEffect(currentStep) {
+        val listHeight = listState.layoutInfo.viewportSize.height
+        val offset = (listHeight / 4)
+        listState.animateScrollToItem(currentStep, scrollOffset = -offset)
+    }
 
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.background,
@@ -44,7 +51,9 @@ fun InteractiveMethodScreen(
         floatingActionButton = {
             InteractiveButtons(
                 onBack = state::backStep,
-                onNext = state::nextStep
+                onNext = state::nextStep,
+                onLast = state.isOnTheLast(),
+                onDone = { navController.popBackStack() }
             )
         }
     ) { paddingValues ->
@@ -53,11 +62,19 @@ fun InteractiveMethodScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
                 .navigationBarsPadding()
-                .topEdgeShade(Color.Black.copy(0.32f), isVisible = listState.canScrollBackward, ratio = 0.05f)
-                .bottomEdgeShade(MaterialTheme.colorScheme.background, isVisible = listState.canScrollForward, ratio = 0.05f),
+                .topEdgeShade(
+                    MaterialTheme.colorScheme.background,
+                    isVisible = listState.canScrollBackward,
+                    ratio = 0.05f
+                )
+                .bottomEdgeShade(
+                    MaterialTheme.colorScheme.background,
+                    isVisible = listState.canScrollForward,
+                    ratio = 0.05f
+                ),
             state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(vertical = 8.dp)
+            contentPadding = PaddingValues(top = 8.dp, bottom = 82.dp)
         ) {
             itemsIndexed(
                 items = state.steps,
@@ -65,7 +82,7 @@ fun InteractiveMethodScreen(
             ) { index, step ->
                 InteractiveStepCard(
                     step = step,
-                    isCurrent = (state.currentStep.intValue == index)
+                    isCurrent = (currentStep == index)
                 )
             }
         }

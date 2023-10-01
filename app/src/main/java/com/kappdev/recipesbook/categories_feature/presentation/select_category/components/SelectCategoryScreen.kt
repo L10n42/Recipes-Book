@@ -3,10 +3,11 @@ package com.kappdev.recipesbook.categories_feature.presentation.select_category.
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Scaffold
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,6 +20,8 @@ import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.categories_feature.presentation.select_category.SelectCategoryViewModel
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
+import com.kappdev.recipesbook.core.presentation.common.components.bottomEdgeShade
+import com.kappdev.recipesbook.core.presentation.common.components.topEdgeShade
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.goBackWithValue
 
@@ -27,6 +30,7 @@ fun SelectCategoryScreen(
     navController: NavHostController,
     viewModel: SelectCategoryViewModel = hiltViewModel()
 ) {
+    val listState = rememberLazyListState()
     val categories = viewModel.categories.value
 
     LaunchedEffect(Unit) {
@@ -45,7 +49,19 @@ fun SelectCategoryScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
+                .navigationBarsPadding()
+                .topEdgeShade(
+                    MaterialTheme.colorScheme.background,
+                    isVisible = listState.canScrollBackward,
+                    ratio = 0.05f
+                )
+                .bottomEdgeShade(
+                    MaterialTheme.colorScheme.background,
+                    isVisible = listState.canScrollForward,
+                    ratio = 0.05f
+                ),
+            state = listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
         ) {
