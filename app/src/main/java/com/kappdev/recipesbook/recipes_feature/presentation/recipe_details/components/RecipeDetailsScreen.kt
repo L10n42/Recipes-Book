@@ -140,7 +140,13 @@ fun RecipeDetailsScreen(
             ) { index ->
                 when (Tab.values()[index]) {
                     Tab.INGREDIENTS -> IngredientsList(ingredients = recipe.ingredients)
-                    Tab.RECIPE_METHOD -> RecipeMethod(steps = recipe.method)
+                    Tab.RECIPE_METHOD -> RecipeMethod(steps = recipe.method) {
+                        navController.navigateWithValue(
+                            route = Screen.InteractiveMethod.route,
+                            valueKey = NavConst.METHOD_STEPS_KEY,
+                            value = recipe.method
+                        )
+                    }
                 }
             }
         }

@@ -10,6 +10,7 @@ sealed class Screen(val route: String) {
     data object Ingredients: Screen("ingredients_screen")
     data object AddEditMethod: Screen("add_edit_method_screen")
     data object RecipeDetail: Screen("recipe_details_screen")
+    data object InteractiveMethod: Screen("interactive_method_screen")
 
     data object ManageCategories: Screen("manage_categories_screen")
     data object SelectCategory: Screen("select_category_screen")

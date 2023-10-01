@@ -15,4 +15,6 @@
     <string name="show_description_icon">show description icon</string>
     <string name="right_image_button">right_image_button</string>
     <string name="left_image_button">left_image_button</string>
+    <string name="back_interaction_button">back_interaction_button</string>
+    <string name="next_interaction_button">next_interaction_button</string>
 </resources>

@@ -21,6 +21,7 @@ import com.kappdev.recipesbook.categories_feature.presentation.select_category.c
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.components.AddEditRecipeScreen
 import com.kappdev.recipesbook.recipes_feature.presentation.ingredients.components.IngredientsScreen
+import com.kappdev.recipesbook.recipes_feature.presentation.interactive_method.components.InteractiveMethodScreen
 import com.kappdev.recipesbook.recipes_feature.presentation.method_steps.components.AddEditMethodScreen
 import com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.components.RecipeDetailsScreen
 import com.kappdev.recipesbook.recipes_feature.presentation.recipes.components.RecipesScreen
@@ -118,6 +119,17 @@ fun SetupNavGraph(
             val category = stackEntry.catchValue<String>(NavConst.RECIPE_CATEGORY_KEY)
             val recipeId = stackEntry.catchValue<String>(NavConst.RECIPE_ID_KEY)
             AddEditRecipeScreen(navController, ingredients, method, category, recipeId)
+        }
+
+        composable(
+            Screen.InteractiveMethod.route,
+            enterTransition = { slideInLeft() },
+            exitTransition = { slideOutRight() },
+            popEnterTransition = { slideInRight() },
+            popExitTransition = { slideOutRight() }
+        ) { stackEntry ->
+            val method = stackEntry.catchValue<List<String>>(NavConst.METHOD_STEPS_KEY) ?: emptyList()
+            InteractiveMethodScreen(navController, method)
         }
 
         composable(

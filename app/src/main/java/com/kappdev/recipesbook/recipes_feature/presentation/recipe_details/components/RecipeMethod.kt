@@ -1,6 +1,7 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,10 +37,13 @@ import com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.compo
 @Composable
 fun RecipeMethod(
     steps: List<String>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
     LazyColumn(
-        modifier = modifier.navigationBarsPadding(),
+        modifier = modifier
+            .navigationBarsPadding()
+            .clickable(onClick = onClick),
         contentPadding = PaddingValues(8.dp)
     ) {
         itemsIndexed(
