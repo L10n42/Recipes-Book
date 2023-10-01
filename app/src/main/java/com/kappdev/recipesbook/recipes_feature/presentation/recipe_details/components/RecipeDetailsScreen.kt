@@ -2,18 +2,22 @@ package com.kappdev.recipesbook.recipes_feature.presentation.recipe_details.comp
 
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,9 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -174,21 +181,40 @@ private fun Tabs(
 ) {
     TabRow(
         containerColor = Color.Transparent,
-        selectedTabIndex = selectedTabIndex
+        selectedTabIndex = selectedTabIndex,
+        indicator = { tabPositions ->
+            if (selectedTabIndex < tabPositions.size) {
+                CustomIndicator(
+                    Modifier.tabIndicatorOffset(tabPositions[selectedTabIndex])
+                )
+            }
+        }
     ) {
         Tab.values().forEachIndexed { index, tab ->
             val isSelected = (selectedTabIndex == index)
+            val selectedTextStyle = TextStyle(
+                brush = Brush.verticalGradient(
+                    0.4f to MaterialTheme.colorScheme.onSurface,
+                    1f to MaterialTheme.colorScheme.primary
+                ),
+                fontWeight = FontWeight.SemiBold
+            )
+
+            val defaultTextStyle = TextStyle(
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Normal
+            )
+
             Tab(
                 selected = isSelected,
+                modifier = Modifier.clip(
+                    RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
+                ),
                 text = {
                     Text(
                         text = stringResource(tab.resId),
-                        fontSize = 16.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                        color = when {
-                            isSelected -> MaterialTheme.colorScheme.onSurface
-                            else -> MaterialTheme.colorScheme.onBackground
-                        }
+                        fontSize = 18.sp,
+                        style = if (isSelected) selectedTextStyle else defaultTextStyle
                     )
                 },
                 onClick = {
@@ -197,4 +223,19 @@ private fun Tabs(
             )
         }
     }
+}
+
+@Composable
+private fun CustomIndicator(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier
+            .fillMaxWidth()
+            .height(3.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primary,
+                shape = RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp)
+            )
+    )
 }
