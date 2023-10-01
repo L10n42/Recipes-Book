@@ -35,6 +35,8 @@ import com.kappdev.recipesbook.R
 import com.kappdev.recipesbook.core.domain.model.ImageSource
 import com.kappdev.recipesbook.core.presentation.common.components.ErrorImage
 import com.kappdev.recipesbook.core.presentation.common.components.ImageLoadingAnimation
+import com.kappdev.recipesbook.core.presentation.common.components.leftEdgeShade
+import com.kappdev.recipesbook.core.presentation.common.components.rightEdgeShade
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -62,7 +64,10 @@ fun RecipeImages(
         }
     } else {
         LazyRow(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .leftEdgeShade(MaterialTheme.colorScheme.background, isVisible = listState.canScrollBackward)
+                .rightEdgeShade(MaterialTheme.colorScheme.background, isVisible = listState.canScrollForward),
             state = listState,
             flingBehavior = snapBehavior,
             contentPadding = PaddingValues(16.dp),

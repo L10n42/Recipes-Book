@@ -1,7 +1,5 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.recipes.components
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +23,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.presentation.common.components.ImagePicker
 import com.kappdev.recipesbook.core.presentation.common.components.PictureBackground
 import com.kappdev.recipesbook.core.presentation.common.components.ProfileImage
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
@@ -56,14 +59,14 @@ fun RecipesDrawer(
 ) {
     val user = viewModel.user.value
     val scope = rememberCoroutineScope()
-    val pickPhotoLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            uri?.let {
-                viewModel.updateProfileImage(uri)
-            }
-        }
-    )
+
+    var showImagePicker by remember { mutableStateOf(false) }
+    if (showImagePicker) {
+        ImagePicker(
+            onResult = viewModel::updateProfileImage,
+            onDismiss = { showImagePicker = false }
+        )
+    }
 
     PictureBackground(
         picture = painterResource(R.drawable.drawer_background),
@@ -81,7 +84,7 @@ fun RecipesDrawer(
             UserInfo(user = user) {
                 scope.launch {
                     closeDrawer()
-                    pickPhotoLauncher.launch("image/*")
+                    showImagePicker = true
                 }
             }
 

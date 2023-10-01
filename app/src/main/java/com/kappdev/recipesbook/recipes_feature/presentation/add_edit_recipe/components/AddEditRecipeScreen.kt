@@ -1,7 +1,5 @@
 package com.kappdev.recipesbook.recipes_feature.presentation.add_edit_recipe.components
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +35,7 @@ import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
 import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.ActionButton
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
+import com.kappdev.recipesbook.core.presentation.common.components.ImagePicker
 import com.kappdev.recipesbook.core.presentation.common.components.InputField
 import com.kappdev.recipesbook.core.presentation.common.components.LoadingDialog
 import com.kappdev.recipesbook.core.presentation.common.components.SelectorField
@@ -68,6 +67,7 @@ fun AddEditRecipeScreen(
     val images = viewModel.images
     val isLoading = viewModel.isLoading.value
     var showSaveDialog by remember { mutableStateOf(false) }
+    var showImagePicker by remember { mutableStateOf(false) }
 
     if (showSaveDialog) {
         SaveChangesDialog(
@@ -86,14 +86,12 @@ fun AddEditRecipeScreen(
         snackbarState = viewModel.snackbarState
     )
 
-    val pickPhotoLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            uri?.let {
-                viewModel.addImage(uri)
-            }
-        }
-    )
+    if (showImagePicker) {
+        ImagePicker(
+            onResult = viewModel::addImage,
+            onDismiss = { showImagePicker = false }
+        )
+    }
 
     LaunchedEffect(Unit) {
         initialIngredients?.let { viewModel.setIngredients(initialIngredients) }
@@ -152,12 +150,8 @@ fun AddEditRecipeScreen(
         ) {
             RecipeImages(
                 images = images,
-                addImage = {
-                    pickPhotoLauncher.launch("image/*")
-                },
-                removeImage = { image ->
-                    viewModel.removeImage(image)
-                }
+                removeImage = viewModel::removeImage,
+                addImage = { showImagePicker = true }
             )
 
             InputField(

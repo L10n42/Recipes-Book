@@ -12,23 +12,29 @@ object FieldDefaults {
 
     val shape = RoundedCornerShape(8.dp)
 
-    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun colors(
         background: Color = MaterialTheme.colorScheme.surface
-    ) = TextFieldDefaults.textFieldColors(
-        textColor = MaterialTheme.colorScheme.onSurface,
+    ) = TextFieldDefaults.colors(
+        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+        unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
         disabledTextColor = MaterialTheme.colorScheme.onBackground,
+        errorTextColor = MaterialTheme.colorScheme.error,
 
-        placeholderColor = MaterialTheme.colorScheme.onBackground,
+        focusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
+        unfocusedPlaceholderColor = MaterialTheme.colorScheme.onBackground,
         disabledPlaceholderColor = MaterialTheme.colorScheme.onBackground,
+        errorPlaceholderColor = MaterialTheme.colorScheme.onBackground,
 
         errorIndicatorColor = Color.Transparent,
         focusedIndicatorColor = Color.Transparent,
         disabledIndicatorColor = Color.Transparent,
         unfocusedIndicatorColor = Color.Transparent,
 
-        containerColor = background,
+        focusedContainerColor = background,
+        unfocusedContainerColor = background,
+        disabledContainerColor = background,
+        errorContainerColor = background,
 
         focusedLeadingIconColor = MaterialTheme.colorScheme.onSurface,
         unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurface,

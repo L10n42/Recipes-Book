@@ -92,31 +92,27 @@ fun RecipesScreen(
             }
         }
     ) { paddingValues ->
-
-        Column(
-            modifier = Modifier.padding(paddingValues)
+        LazyColumn(
+            state = listState,
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .navigationBarsPadding()
+                .bottomEdgeShade(
+                    color = MaterialTheme.colorScheme.background,
+                    isVisible = listState.canScrollForward,
+                    ratio = 0.05f
+                ),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
         ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding()
-                    .bottomEdgeShade(
-                        color = MaterialTheme.colorScheme.background,
-                        isVisible = listState.canScrollForward,
-                        ratio = 0.05f
-                    ),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp)
-            ) {
-                items(recipes, { it.id }) { item ->
-                    RecipeCard(data = item, highlightArg = searchArg) {
-                        navController.navigateWithValue(
-                            route = Screen.RecipeDetail.route,
-                            valueKey = NavConst.RECIPE_ID_KEY,
-                            value = item.id
-                        )
-                    }
+            items(recipes, { it.id }) { item ->
+                RecipeCard(data = item, highlightArg = searchArg) {
+                    navController.navigateWithValue(
+                        route = Screen.RecipeDetail.route,
+                        valueKey = NavConst.RECIPE_ID_KEY,
+                        value = item.id
+                    )
                 }
             }
         }
