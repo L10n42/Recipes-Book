@@ -92,4 +92,4 @@ fun InteractiveStepCard(
     }
 }
 
-private val ANIM_DURATION = 600
+private const val ANIM_DURATION = 600
