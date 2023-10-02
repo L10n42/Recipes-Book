@@ -23,11 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,10 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.kappdev.recipesbook.R
-import com.kappdev.recipesbook.core.presentation.common.components.ImagePicker
 import com.kappdev.recipesbook.core.presentation.common.components.PictureBackground
 import com.kappdev.recipesbook.core.presentation.common.components.ProfileImage
+import com.kappdev.recipesbook.core.presentation.common.components.ProfilePhotoPicker
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
+import com.kappdev.recipesbook.core.presentation.common.rememberPhotoPickerState
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
@@ -59,14 +56,12 @@ fun RecipesDrawer(
 ) {
     val user = viewModel.user.value
     val scope = rememberCoroutineScope()
+    val photoPickerState = rememberPhotoPickerState()
 
-    var showImagePicker by remember { mutableStateOf(false) }
-    if (showImagePicker) {
-        ImagePicker(
-            onResult = viewModel::updateProfileImage,
-            onDismiss = { showImagePicker = false }
-        )
-    }
+    ProfilePhotoPicker(
+        state = photoPickerState,
+        onResult = viewModel::updateProfileImage
+    )
 
     PictureBackground(
         picture = painterResource(R.drawable.drawer_background),
@@ -84,7 +79,7 @@ fun RecipesDrawer(
             UserInfo(user = user) {
                 scope.launch {
                     closeDrawer()
-                    showImagePicker = true
+                    photoPickerState.launch()
                 }
             }
 

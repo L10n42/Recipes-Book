@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateInt
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -29,23 +30,33 @@ fun InteractiveStepCard(
 ) {
     val transition = updateTransition(targetState = isCurrent, label = "is current card transition")
 
-    val maxLines by transition.animateInt(label = "max lines") { selected ->
+    val maxLines by transition.animateInt(
+        label = "max lines", transitionSpec = { tween(ANIM_DURATION) }
+    ) { selected ->
         if (selected) 10 else 1
     }
 
-    val textColor by transition.animateColor(label = "text color") { selected ->
+    val textColor by transition.animateColor(
+        label = "text color", transitionSpec = { tween(ANIM_DURATION) }
+    ) { selected ->
         if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onBackground
     }
 
-    val shadowAlpha by transition.animateFloat(label = "shadow alpha") { selected ->
+    val shadowAlpha by transition.animateFloat(
+        label = "shadow alpha", transitionSpec = { tween(ANIM_DURATION) }
+    ) { selected ->
         if (selected) 0f else 0.32f
     }
 
-    val elevation by transition.animateDp(label = "elevation") { selected ->
+    val elevation by transition.animateDp(
+        label = "elevation", transitionSpec = { tween(ANIM_DURATION) }
+    ) { selected ->
         if (selected) 8.dp else 0.dp
     }
 
-    val padding by transition.animateDp(label = "padding") { selected ->
+    val padding by transition.animateDp(
+        label = "padding", transitionSpec = { tween(ANIM_DURATION) }
+    ) { selected ->
         if (selected) 8.dp else 16.dp
     }
 
@@ -80,3 +91,5 @@ fun InteractiveStepCard(
         }
     }
 }
+
+private val ANIM_DURATION = 600

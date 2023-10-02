@@ -1,7 +1,5 @@
 package com.kappdev.recipesbook.auth_feature.presentation.sign_up.components
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +27,9 @@ import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.InfoDialog
 import com.kappdev.recipesbook.core.presentation.common.components.PictureBackground
 import com.kappdev.recipesbook.core.presentation.common.components.ProfileImage
+import com.kappdev.recipesbook.core.presentation.common.components.ProfilePhotoPicker
 import com.kappdev.recipesbook.core.presentation.common.components.VerticalSpace
+import com.kappdev.recipesbook.core.presentation.common.rememberPhotoPickerState
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
 
 @Composable
@@ -38,6 +38,8 @@ fun SignUpScreen(
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val scaffoldState = rememberScaffoldState()
+    val photoPickerState = rememberPhotoPickerState()
+
     val username = viewModel.username.value
     val email = viewModel.email.value
     val password = viewModel.password.value
@@ -54,13 +56,9 @@ fun SignUpScreen(
         snackbarState = viewModel.snackbarState
     )
 
-    val pickProfileLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri ->
-            uri?.let {
-                viewModel.setProfileImage(uri)
-            }
-        }
+    ProfilePhotoPicker(
+        state = photoPickerState,
+        onResult = viewModel::setProfileImage
     )
 
     Scaffold(
@@ -88,9 +86,8 @@ fun SignUpScreen(
                     ProfileImage(
                         model = profileImageUri,
                         enable = !isLoading,
-                    ) {
-                        pickProfileLauncher.launch("image/*")
-                    }
+                        onClick = photoPickerState::launch
+                    )
 
                     VerticalSpace(space = 8.dp)
 

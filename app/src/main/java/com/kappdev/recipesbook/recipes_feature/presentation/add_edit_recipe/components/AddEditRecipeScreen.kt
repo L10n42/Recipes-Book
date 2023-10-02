@@ -35,10 +35,11 @@ import com.kappdev.recipesbook.core.presentation.common.NavigationHandler
 import com.kappdev.recipesbook.core.presentation.common.SnackbarHandler
 import com.kappdev.recipesbook.core.presentation.common.components.ActionButton
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
-import com.kappdev.recipesbook.core.presentation.common.components.ImagePicker
 import com.kappdev.recipesbook.core.presentation.common.components.InputField
 import com.kappdev.recipesbook.core.presentation.common.components.LoadingDialog
+import com.kappdev.recipesbook.core.presentation.common.components.RecipePhotoPicker
 import com.kappdev.recipesbook.core.presentation.common.components.SelectorField
+import com.kappdev.recipesbook.core.presentation.common.rememberPhotoPickerState
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.Screen
 import com.kappdev.recipesbook.core.presentation.navigation.navigateWithValue
@@ -58,6 +59,8 @@ fun AddEditRecipeScreen(
 ) {
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberScaffoldState()
+    val photoPickerState = rememberPhotoPickerState()
+
     val descriptionBIVR = remember { BringIntoViewRequester() }
     val recipeName = viewModel.recipeName.value
     val recipeDescription = viewModel.recipeDescription.value
@@ -67,7 +70,6 @@ fun AddEditRecipeScreen(
     val images = viewModel.images
     val isLoading = viewModel.isLoading.value
     var showSaveDialog by remember { mutableStateOf(false) }
-    var showImagePicker by remember { mutableStateOf(false) }
 
     if (showSaveDialog) {
         SaveChangesDialog(
@@ -86,12 +88,10 @@ fun AddEditRecipeScreen(
         snackbarState = viewModel.snackbarState
     )
 
-    if (showImagePicker) {
-        ImagePicker(
-            onResult = viewModel::addImage,
-            onDismiss = { showImagePicker = false }
-        )
-    }
+    RecipePhotoPicker(
+        state = photoPickerState,
+        onResult = viewModel::addImage
+    )
 
     LaunchedEffect(Unit) {
         initialIngredients?.let { viewModel.setIngredients(initialIngredients) }
@@ -151,7 +151,7 @@ fun AddEditRecipeScreen(
             RecipeImages(
                 images = images,
                 removeImage = viewModel::removeImage,
-                addImage = { showImagePicker = true }
+                addImage = photoPickerState::launch
             )
 
             InputField(

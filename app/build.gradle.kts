@@ -59,6 +59,9 @@ kapt {
 
 dependencies {
 
+    // Image cropper
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
+
     // Coil image
     implementation("io.coil-kt:coil-compose:2.4.0")
 
