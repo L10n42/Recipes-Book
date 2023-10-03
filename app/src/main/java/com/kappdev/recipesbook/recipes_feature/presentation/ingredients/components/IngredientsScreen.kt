@@ -23,6 +23,8 @@ import com.kappdev.recipesbook.core.presentation.common.components.ActionButton
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
 import com.kappdev.recipesbook.core.presentation.common.components.bottomEdgeShade
 import com.kappdev.recipesbook.core.presentation.common.components.topEdgeShade
+import com.kappdev.recipesbook.core.presentation.common.mutableDialogStateOf
+import com.kappdev.recipesbook.core.presentation.common.rememberMutableDialogState
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.goBackWithValue
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
@@ -37,6 +39,7 @@ fun IngredientsScreen(
     initialIngredients: List<Ingredient>
 ) {
     val screenState = remember { IngredientsScreenState(initialIngredients) }
+    val dialogState = rememberMutableDialogState<Ingredient?>(null)
 
     val state = rememberReorderableLazyListState(
         onMove = { from, to ->
@@ -44,19 +47,16 @@ fun IngredientsScreen(
         }
     )
 
-    if (screenState.isDialogVisible.value) {
-        IngredientDialog(
-            initialData = screenState.dialogData.value,
-            onDismiss = screenState::hideDialog,
-            onConfirm = { result ->
-                if (screenState.dialogData.value != null) {
-                    screenState.updateIngredient(result)
-                } else {
-                    screenState.addIngredient(result)
-                }
+    IngredientDialog(
+        state = dialogState,
+        onConfirm = { result ->
+            if (dialogState.dialogData.value != null) {
+                screenState.updateIngredient(result)
+            } else {
+                screenState.addIngredient(result)
             }
-        )
-    }
+        }
+    )
 
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.background,
@@ -72,7 +72,7 @@ fun IngredientsScreen(
                 title = stringResource(R.string.new_title),
                 modifier = Modifier.navigationBarsPadding()
             ) {
-                screenState.showDialog(data = null)
+                dialogState.showDialog(data = null)
             }
         }
     ) { paddingValues ->
@@ -90,7 +90,8 @@ fun IngredientsScreen(
                     MaterialTheme.colorScheme.background,
                     isVisible = state.listState.canScrollForward,
                     ratio = 0.05f
-                ).reorderable(state),
+                )
+                .reorderable(state),
             state = state.listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 82.dp)
@@ -108,7 +109,7 @@ fun IngredientsScreen(
                         },
                         onClick = {
                             screenState.clickItem(index)
-                            screenState.showDialog(ingredient)
+                            dialogState.showDialog(ingredient)
                         },
                     )
                 }

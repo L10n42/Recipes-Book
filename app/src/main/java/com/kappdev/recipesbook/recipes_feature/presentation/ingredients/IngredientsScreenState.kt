@@ -2,6 +2,8 @@ package com.kappdev.recipesbook.recipes_feature.presentation.ingredients
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import com.kappdev.recipesbook.core.presentation.common.DialogState
+import com.kappdev.recipesbook.core.presentation.common.mutableDialogStateOf
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 
 class IngredientsScreenState(
@@ -10,12 +12,6 @@ class IngredientsScreenState(
 
     private var _ingredients = mutableStateListOf<Ingredient>()
     val ingredient: List<Ingredient> = _ingredients
-
-    var dialogData = mutableStateOf<Ingredient?>(null)
-        private set
-
-    var isDialogVisible = mutableStateOf(false)
-        private set
 
     private var clickedItemIndex = -1
 
@@ -27,16 +23,6 @@ class IngredientsScreenState(
         _ingredients.apply {
             add(to, removeAt(from))
         }
-    }
-
-    fun showDialog(data: Ingredient?) {
-        dialogData.value = data
-        isDialogVisible.value = true
-    }
-
-    fun hideDialog() {
-        dialogData.value = null
-        isDialogVisible.value = false
     }
 
     fun updateIngredient(ingredient: Ingredient) {

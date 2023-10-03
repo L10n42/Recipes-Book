@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kappdev.recipesbook.R
+import com.kappdev.recipesbook.core.presentation.common.MutableDialogState
 import com.kappdev.recipesbook.core.presentation.common.components.AnimatedTransitionDialog
 import com.kappdev.recipesbook.core.presentation.common.components.DefaultDialogPlatform
 import com.kappdev.recipesbook.core.presentation.common.components.InputField
@@ -38,6 +39,20 @@ import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 
 @Composable
 fun IngredientDialog(
+    state: MutableDialogState<Ingredient?>,
+    onConfirm: (Ingredient) -> Unit
+) {
+    if (state.isDialogVisible.value) {
+        IngredientDialog(
+            initialData = state.dialogData.value,
+            onDismiss = state::hideDialog,
+            onConfirm = onConfirm
+        )
+    }
+}
+
+@Composable
+private fun IngredientDialog(
     initialData: Ingredient?,
     onDismiss: () -> Unit,
     onConfirm: (Ingredient) -> Unit
