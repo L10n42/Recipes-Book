@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -29,14 +27,22 @@ import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.goBackWithValue
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.presentation.ingredients.IngredientsScreenState
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 fun IngredientsScreen(
     navController: NavHostController,
     initialIngredients: List<Ingredient>
 ) {
-    val listState = rememberLazyListState()
     val screenState = remember { IngredientsScreenState(initialIngredients) }
+
+    val state = rememberReorderableLazyListState(
+        onMove = { from, to ->
+            screenState.moveItem(from.index, to.index)
+        }
+    )
 
     if (screenState.isDialogVisible.value) {
         IngredientDialog(
@@ -77,15 +83,15 @@ fun IngredientsScreen(
                 .navigationBarsPadding()
                 .topEdgeShade(
                     MaterialTheme.colorScheme.background,
-                    isVisible = listState.canScrollBackward,
+                    isVisible = state.listState.canScrollBackward,
                     ratio = 0.05f
                 )
                 .bottomEdgeShade(
                     MaterialTheme.colorScheme.background,
-                    isVisible = listState.canScrollForward,
+                    isVisible = state.listState.canScrollForward,
                     ratio = 0.05f
-                ),
-            state = listState,
+                ).reorderable(state),
+            state = state.listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 82.dp)
         ) {
@@ -93,17 +99,19 @@ fun IngredientsScreen(
                 items = screenState.ingredient,
                 key = { _, item -> item.hashCode() }
             ) { index, ingredient ->
-                IngredientCard(
-                    ingredient = ingredient,
-                    onRemove = {
-                        screenState.removeIngredient(ingredient)
-                    },
-                    onClick = {
-                        screenState.clickItem(index)
-                        screenState.showDialog(ingredient)
-                    },
-                    onDrag = { /*TODO*/ }
-                )
+                ReorderableItem(reorderableState = state, key = ingredient.hashCode()) { isDragging ->
+                    IngredientCard(
+                        ingredient = ingredient,
+                        reorderableState = state,
+                        onRemove = {
+                            screenState.removeIngredient(ingredient)
+                        },
+                        onClick = {
+                            screenState.clickItem(index)
+                            screenState.showDialog(ingredient)
+                        },
+                    )
+                }
             }
         }
     }

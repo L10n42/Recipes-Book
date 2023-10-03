@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -30,17 +29,25 @@ import com.kappdev.recipesbook.core.presentation.common.components.DefaultTopBar
 import com.kappdev.recipesbook.core.presentation.common.components.bottomEdgeShade
 import com.kappdev.recipesbook.core.presentation.common.components.topEdgeShade
 import com.kappdev.recipesbook.recipes_feature.presentation.method_steps.components.StepDialog
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 fun ManageCategoriesScreen(
     navController: NavHostController,
     viewModel: CategoriesViewModel = hiltViewModel()
 ) {
-    val listState = rememberLazyListState()
     val scaffoldState = rememberScaffoldState()
     val categories = viewModel.categories
     val dialogData = viewModel.dialogData.value
     val isDialogVisible = viewModel.isDialogVisible.value
+
+    val state = rememberReorderableLazyListState(
+        onMove = { from, to ->
+            viewModel.moveItem(from.index, to.index)
+        }
+    )
 
     if (isDialogVisible) {
         StepDialog(
@@ -97,15 +104,15 @@ fun ManageCategoriesScreen(
                 .navigationBarsPadding()
                 .topEdgeShade(
                     MaterialTheme.colorScheme.background,
-                    isVisible = listState.canScrollBackward,
+                    isVisible = state.listState.canScrollBackward,
                     ratio = 0.05f
                 )
                 .bottomEdgeShade(
                     MaterialTheme.colorScheme.background,
-                    isVisible = listState.canScrollForward,
+                    isVisible = state.listState.canScrollForward,
                     ratio = 0.05f
-                ),
-            state = listState,
+                ).reorderable(state),
+            state = state.listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 82.dp)
         ) {
@@ -113,17 +120,19 @@ fun ManageCategoriesScreen(
                 items = categories,
                 key = { _, item -> item.hashCode() }
             ) { index, category ->
-                CategoryCard(
-                    category = category,
-                    onRemove = {
-                        viewModel.removeCategory(category)
-                    },
-                    onClick = {
-                        viewModel.clickItem(index)
-                        viewModel.showDialog(category)
-                    },
-                    onDrag = { /*TODO*/ }
-                )
+                ReorderableItem(reorderableState = state, key = category.hashCode()) { isDragging ->
+                    CategoryCard(
+                        category = category,
+                        reorderableState = state,
+                        onRemove = {
+                            viewModel.removeCategory(category)
+                        },
+                        onClick = {
+                            viewModel.clickItem(index)
+                            viewModel.showDialog(category)
+                        },
+                    )
+                }
             }
         }
     }

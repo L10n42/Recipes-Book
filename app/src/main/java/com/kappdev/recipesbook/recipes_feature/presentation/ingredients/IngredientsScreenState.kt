@@ -23,6 +23,12 @@ class IngredientsScreenState(
         _ingredients.addAll(initialIngredient)
     }
 
+    fun moveItem(from: Int, to: Int) {
+        _ingredients.apply {
+            add(to, removeAt(from))
+        }
+    }
+
     fun showDialog(data: Ingredient?) {
         dialogData.value = data
         isDialogVisible.value = true

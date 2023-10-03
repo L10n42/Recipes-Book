@@ -8,18 +8,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.kappdev.recipesbook.core.presentation.common.components.AnimatedComponentCard
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
+import org.burnoutcrew.reorderable.ReorderableState
 
 @Composable
 fun StepCard(
     step: String,
     onRemove: () -> Unit,
-    onDrag: () -> Unit,
+    reorderableState: ReorderableState<*>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     AnimatedComponentCard(
         modifier = modifier,
-        onDrag = onDrag,
+        reorderableState = reorderableState,
         onClick = onClick,
         onRemove = onRemove
     ) {

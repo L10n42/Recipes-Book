@@ -22,6 +22,12 @@ class AddEditMethodScreenState(
         _steps.addAll(initialSteps)
     }
 
+    fun moveItem(from: Int, to: Int) {
+        _steps.apply {
+            add(to, removeAt(from))
+        }
+    }
+
     fun showDialog(data: String?) {
         dialogData.value = data
         isDialogVisible.value = true

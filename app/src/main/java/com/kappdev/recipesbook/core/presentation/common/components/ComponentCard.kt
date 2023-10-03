@@ -40,11 +40,13 @@ import com.kappdev.recipesbook.core.presentation.common.CARD_ANIM_SCALE
 import com.kappdev.recipesbook.core.presentation.common.FieldDefaults
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.burnoutcrew.reorderable.ReorderableState
+import org.burnoutcrew.reorderable.detectReorder
 
 @Composable
 fun AnimatedComponentCard(
     onRemove: () -> Unit,
-    onDrag: () -> Unit,
+    reorderableState: ReorderableState<*>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     content: @Composable RowScope.() -> Unit
@@ -81,7 +83,7 @@ fun AnimatedComponentCard(
     ) {
         DefaultComponentCard(
             modifier = modifier,
-            onDrag = onDrag,
+            reorderableState = reorderableState,
             onClick = onClick,
             content = content,
             onRemove = ::animatedRemove
@@ -92,7 +94,7 @@ fun AnimatedComponentCard(
 @Composable
 fun DefaultComponentCard(
     onRemove: () -> Unit,
-    onDrag: () -> Unit,
+    reorderableState: ReorderableState<*>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
     content: @Composable RowScope.() -> Unit
@@ -119,7 +121,7 @@ fun DefaultComponentCard(
                 imageVector = Icons.Rounded.DragIndicator,
                 tint = MaterialTheme.colorScheme.onSurface,
                 contentDescription = stringResource(R.string.item_drag_indicator),
-                modifier = Modifier.clickable(onClick = onDrag)
+                modifier = Modifier.detectReorder(reorderableState)
             )
 
             HorizontalSpace(4.dp)

@@ -59,6 +59,9 @@ kapt {
 
 dependencies {
 
+    // Reorderable list
+    implementation("org.burnoutcrew.composereorderable:reorderable:0.9.6")
+
     // Image cropper
     implementation("com.vanniktech:android-image-cropper:4.5.0")
 

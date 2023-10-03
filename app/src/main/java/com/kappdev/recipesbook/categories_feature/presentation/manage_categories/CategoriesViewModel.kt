@@ -63,6 +63,12 @@ class CategoriesViewModel @Inject constructor(
         _categories.addAll(value)
     }
 
+    fun moveItem(from: Int, to: Int) {
+        _categories.apply {
+            add(to, removeAt(from))
+        }
+    }
+
     fun showDialog(data: String?) {
         dialogData.value = data
         isDialogVisible.value = true

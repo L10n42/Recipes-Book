@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.FabPosition
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
@@ -27,14 +26,22 @@ import com.kappdev.recipesbook.core.presentation.common.components.topEdgeShade
 import com.kappdev.recipesbook.core.presentation.navigation.NavConst
 import com.kappdev.recipesbook.core.presentation.navigation.goBackWithValue
 import com.kappdev.recipesbook.recipes_feature.presentation.method_steps.AddEditMethodScreenState
+import org.burnoutcrew.reorderable.ReorderableItem
+import org.burnoutcrew.reorderable.rememberReorderableLazyListState
+import org.burnoutcrew.reorderable.reorderable
 
 @Composable
 fun AddEditMethodScreen(
     navController: NavHostController,
     initialSteps: List<String>
 ) {
-    val listState = rememberLazyListState()
     val screenState = remember { AddEditMethodScreenState(initialSteps) }
+
+    val state = rememberReorderableLazyListState(
+        onMove = { from, to ->
+            screenState.moveItem(from.index, to.index)
+        }
+    )
 
     if (screenState.isDialogVisible.value) {
         StepDialog(
@@ -75,15 +82,16 @@ fun AddEditMethodScreen(
                 .navigationBarsPadding()
                 .topEdgeShade(
                     MaterialTheme.colorScheme.background,
-                    isVisible = listState.canScrollBackward,
+                    isVisible = state.listState.canScrollBackward,
                     ratio = 0.05f
                 )
                 .bottomEdgeShade(
                     MaterialTheme.colorScheme.background,
-                    isVisible = listState.canScrollForward,
+                    isVisible = state.listState.canScrollForward,
                     ratio = 0.05f
-                ),
-            state = listState,
+                )
+                .reorderable(state),
+            state = state.listState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 82.dp)
         ) {
@@ -91,17 +99,19 @@ fun AddEditMethodScreen(
                 items = screenState.steps,
                 key = { _, item -> item.hashCode() }
             ) { index, step ->
-                StepCard(
-                    step = step,
-                    onRemove = {
-                        screenState.removeStep(step)
-                    },
-                    onClick = {
-                        screenState.clickItem(index)
-                        screenState.showDialog(step)
-                    },
-                    onDrag = { /*TODO*/ }
-                )
+                ReorderableItem(reorderableState = state, key = step.hashCode()) { isDragging ->
+                    StepCard(
+                        step = step,
+                        reorderableState = state,
+                        onRemove = {
+                            screenState.removeStep(step)
+                        },
+                        onClick = {
+                            screenState.clickItem(index)
+                            screenState.showDialog(step)
+                        }
+                    )
+                }
             }
         }
     }

@@ -11,18 +11,19 @@ import com.kappdev.recipesbook.core.presentation.common.components.AnimatedCompo
 import com.kappdev.recipesbook.core.presentation.common.components.HorizontalSpace
 import com.kappdev.recipesbook.recipes_feature.domain.model.Ingredient
 import com.kappdev.recipesbook.recipes_feature.domain.model.buildAmountString
+import org.burnoutcrew.reorderable.ReorderableState
 
 @Composable
 fun IngredientCard(
     ingredient: Ingredient,
     onRemove: () -> Unit,
-    onDrag: () -> Unit,
+    reorderableState: ReorderableState<*>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
     AnimatedComponentCard(
         modifier = modifier,
-        onDrag = onDrag,
+        reorderableState = reorderableState,
         onClick = onClick,
         onRemove = onRemove
     ) {

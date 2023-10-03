@@ -9,12 +9,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import com.kappdev.recipesbook.core.presentation.common.components.EdgeShadePosition.BOTTOM
-import com.kappdev.recipesbook.core.presentation.common.components.EdgeShadePosition.LEFT
-import com.kappdev.recipesbook.core.presentation.common.components.EdgeShadePosition.RIGHT
-import com.kappdev.recipesbook.core.presentation.common.components.EdgeShadePosition.TOP
+import com.kappdev.recipesbook.core.presentation.common.components.FadePosition.BOTTOM
+import com.kappdev.recipesbook.core.presentation.common.components.FadePosition.LEFT
+import com.kappdev.recipesbook.core.presentation.common.components.FadePosition.RIGHT
+import com.kappdev.recipesbook.core.presentation.common.components.FadePosition.TOP
 
-private enum class EdgeShadePosition {
+private enum class FadePosition {
     LEFT, RIGHT, BOTTOM, TOP
 }
 
@@ -63,7 +63,7 @@ fun Modifier.leftEdgeShade(
 )
 
 private fun Modifier.edgeShade(
-    position: EdgeShadePosition,
+    position: FadePosition,
     color: Color,
     ratio: Float,
     isVisible: Boolean,
@@ -94,7 +94,7 @@ private fun Modifier.edgeShade(
     }
 }
 
-private fun Size.getShadeEndOffset(position: EdgeShadePosition): Offset {
+private fun Size.getShadeEndOffset(position: FadePosition): Offset {
     return when (position) {
         LEFT -> Offset(this.width, this.height / 2)
         RIGHT -> Offset(0f, this.height / 2)
@@ -103,7 +103,7 @@ private fun Size.getShadeEndOffset(position: EdgeShadePosition): Offset {
     }
 }
 
-private fun Size.getShadeStartOffset(position: EdgeShadePosition): Offset {
+private fun Size.getShadeStartOffset(position: FadePosition): Offset {
     return when (position) {
         LEFT -> Offset(0f, this.height / 2)
         RIGHT -> Offset(this.width, this.height / 2)
