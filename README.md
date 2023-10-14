@@ -1,6 +1,6 @@
 # Recipes Book
 
-![Screenshot_2023-10-14-15-43-32-439_com kappdev recipesbook](https://github.com/L10n42/Recipes-Book/assets/108233306/2a4f4753-aa3a-40bd-a3ab-864ffc36f3e7)
+![Screenshot_2023-10-14-15-43-32-439_com kappdev recipesbook](https://i.imgur.com/iwFhxb5.jpeg)
 ![Screenshot_2023-10-14-15-42-03-980_com kappdev recipesbook](https://github.com/L10n42/Recipes-Book/assets/108233306/bcd82dc2-66d3-4afc-95c5-90b75e3aeae0)
 ![Screenshot_2023-10-14-15-41-40-233_com kappdev recipesbook](https://github.com/L10n42/Recipes-Book/assets/108233306/cb9c23f5-4280-448e-8ba5-d96d5833e3ad)
 ![Screenshot_2023-10-14-15-41-16-151_com kappdev recipesbook](https://github.com/L10n42/Recipes-Book/assets/108233306/b31ae079-74ed-4165-a948-7a83e52ca0f7)
